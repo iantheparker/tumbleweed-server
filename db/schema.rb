@@ -11,11 +11,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120513125951) do
+ActiveRecord::Schema.define(:version => 20120513131504) do
 
   create_table "checkins", :force => true do |t|
     t.integer  "user_id"
     t.integer  "venue_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "raw_checkins", :force => true do |t|
+    t.text     "payload"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
