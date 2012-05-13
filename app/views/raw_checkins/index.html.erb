@@ -1,0 +1,23 @@
+<h1>Listing raw_checkins</h1>
+
+<table>
+  <tr>
+    <th>Payload</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @raw_checkins.each do |raw_checkin| %>
+  <tr>
+    <td><%= raw_checkin.payload %></td>
+    <td><%= link_to 'Show', raw_checkin %></td>
+    <td><%= link_to 'Edit', edit_raw_checkin_path(raw_checkin) %></td>
+    <td><%= link_to 'Destroy', raw_checkin, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Raw checkin', new_raw_checkin_path %>

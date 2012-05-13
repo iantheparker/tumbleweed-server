@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120513131504) do
+ActiveRecord::Schema.define(:version => 20120513131959) do
 
   create_table "checkins", :force => true do |t|
     t.integer  "user_id"
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(:version => 20120513131504) do
   end
 
   create_table "raw_checkins", :force => true do |t|
-    t.text     "payload"
+    t.string   "payload"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

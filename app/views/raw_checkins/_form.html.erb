@@ -1,0 +1,21 @@
+<%= form_for(@raw_checkin) do |f| %>
+  <% if @raw_checkin.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@raw_checkin.errors.count, "error") %> prohibited this raw_checkin from being saved:</h2>
+
+      <ul>
+      <% @raw_checkin.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :payload %><br />
+    <%= f.text_area :payload %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
