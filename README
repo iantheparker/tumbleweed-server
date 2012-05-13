@@ -1,0 +1,6 @@
+** pre-requisites **
+# install rvm, instructions at ->  https://rvm.io/
+
+rvm install 1.9.3
+rvm use 1.9.3 # also add this to the end of your ~/.bash_profile so all terminal windows will use this version of ruby by default
+gem install heroku
