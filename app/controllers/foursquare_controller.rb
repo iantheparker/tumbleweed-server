@@ -3,6 +3,9 @@ require 'ruby-bitly'
 class FoursquareController < ApplicationController
 
     def push
+      # first just log the raw checkin from foursquare
+      raw_checkin = RawCheckin.create(:payload => params['checkin'])
+
       checkin = JSON.parse(params['checkin'])
       logger.info(checkin)
       venue = checkin["venue"]
