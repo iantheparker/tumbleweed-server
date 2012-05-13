@@ -1,5 +1,3 @@
-require 'ruby-bitly'
-
 class FoursquareController < ApplicationController
 
     def push
