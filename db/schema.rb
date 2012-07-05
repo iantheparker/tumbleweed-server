@@ -11,7 +11,31 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120513131959) do
+ActiveRecord::Schema.define(:version => 20120704014726) do
+
+  create_table "apn_devices", :force => true do |t|
+    t.string   "token",              :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.datetime "last_registered_at"
+  end
+
+  add_index "apn_devices", ["token"], :name => "index_apn_devices_on_token", :unique => true
+
+  create_table "apn_notifications", :force => true do |t|
+    t.integer  "device_id",                        :null => false
+    t.integer  "errors_nb",         :default => 0
+    t.string   "device_language"
+    t.string   "sound"
+    t.string   "alert"
+    t.integer  "badge"
+    t.text     "custom_properties"
+    t.datetime "sent_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "apn_notifications", ["device_id"], :name => "index_apn_notifications_on_device_id"
 
   create_table "checkins", :force => true do |t|
     t.integer  "user_id"
@@ -21,7 +45,7 @@ ActiveRecord::Schema.define(:version => 20120513131959) do
   end
 
   create_table "raw_checkins", :force => true do |t|
-    t.string   "payload"
+    t.text     "payload"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
