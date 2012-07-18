@@ -4,3 +4,13 @@
 rvm install 1.9.3
 rvm use 1.9.3 # also add this to the end of your ~/.bash_profile so all terminal windows will use this version of ruby by default
 gem install heroku
+
+
+send a post to tumbleweed.me/register
+with fid and devToken
+
+run rails locally hit
+rails server  -within the tweed directory
+
+for live on heroku-
+git push heroku master
