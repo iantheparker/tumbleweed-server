@@ -5,14 +5,11 @@ class UserController < ApplicationController
         @device_id = params['device_token']
         @first_name = params['first_name']
         @last_name = params['last_name']
-        Rails.logger.info(@user_name)
 
         @device=APN::Device.find_by_token(@device_id)
         if @device.nil?
             @device = APN::Device.create(:token => @device_id)
             # maybe send a notification about a new device
-            # send our welcome push
-            Rails.logger.info("oh snap, new device")
         else
             Rails.logger.info("yo, device exists" + @device.inspect)
         end
@@ -24,8 +21,8 @@ class UserController < ApplicationController
                     :first_name => @first_name,
                     :last_name => @last_name
             )
-            Rails.logger.info("oh snap, new user")
-            # maybe send a welcome here
+            Rails.logger.info("oh snap, new user: send push")
+            send_push(@device, "Welcome to Tumbleweed " + @user.first_name)
         else
             Rails.logger.info("yo, user exists" + @user.inspect)
         end
@@ -36,5 +33,16 @@ class UserController < ApplicationController
 
     def status
         render :text => "i'm in register"
+    end
+
+    protected
+    def send_push(device, message)
+        notification=APN::Notification.new
+        notification.device=device
+        notification.badge=5
+        notification.sound=true
+        notification.alert=message
+        notification.save
+        Rails.logger.info("saved notification")
     end
 end
