@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120704014726) do
+ActiveRecord::Schema.define(:version => 20120725011947) do
 
   create_table "apn_devices", :force => true do |t|
     t.string   "token",              :null => false
@@ -46,6 +46,13 @@ ActiveRecord::Schema.define(:version => 20120704014726) do
 
   create_table "raw_checkins", :force => true do |t|
     t.text     "payload"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "users", :force => true do |t|
+    t.string   "device_token"
+    t.string   "foursquare_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
