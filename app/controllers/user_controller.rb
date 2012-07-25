@@ -20,7 +20,7 @@ class UserController < ApplicationController
         @user = User.find_by_device_token_and_foursquare_id(@device.token, @foursquare_id)
         if @user.nil?
             @user = User.create(:device_token => @device.token, 
-                    :foursquare_id => @foursquare_id
+                    :foursquare_id => @foursquare_id,
                     :first_name => @first_name,
                     :last_name => @last_name
             )
