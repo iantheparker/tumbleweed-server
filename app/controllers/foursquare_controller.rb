@@ -29,17 +29,8 @@ class FoursquareController < ApplicationController
 
             v = Venue.find_by_foursquare_id(venue_id)
             if v.nil?
-                if contact.nil?
-                    v = Venue.create(:foursquare_id => venue_id, :name => venue_name)
-                else
-                    phone = contact["phone"]
-                    twitter = contact["twitter"]
-                    v = Venue.create(:foursquare_id => venue_id, :name => venue_name, :admin_phone => phone, :admin_twitter => twitter)
-                end
+                v = Venue.create(:foursquare_id => venue_id, :name => venue_name)
             end
-
-            # TODO match up foursquare id to user's mobile device id (UDID?)
-            #checkin = Checkin.create(:venue_id => v.id, :user_id => user.id)
 
             render :text => "got push"
         end
