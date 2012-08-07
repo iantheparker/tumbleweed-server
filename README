@@ -6,7 +6,8 @@ rvm use 1.9.3 # also add this to the end of your ~/.bash_profile so all terminal
 gem install heroku
 
 https://devcenter.heroku.com/articles/quickstart
-
+https://devcenter.heroku.com/articles/rails3
+https://devcenter.heroku.com/articles/multiple-environments
 
 send a post to tumbleweed.me/register
 with fid and devToken
@@ -16,6 +17,7 @@ rails server  -within the tweed directory
 
 for live on heroku-
 git push heroku master
+*make sure heroku has access to keys - heroku keys:add ~/.ssh/id_rsa.pub
 
 do this before raking the stuff in
 rails g migration nameofmigration
@@ -29,7 +31,4 @@ heroku run rake db:migrate
 let's me watch the logs
 heroku logs --tail
 
-*need to replace remote heroku with 
-git remote add heroku git@heroku.com:tumbleweed.git
 
-*need to swap out env for production
