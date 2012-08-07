@@ -21,7 +21,7 @@ class FoursquareController < ApplicationController
 
         if user
             device = APN::Device.find_by_token(user.device_token)
-            message = "You checked in on foursquare " + venue_name
+            message = "You checked in on foursquare at" + venue_name
             logger.info(message)
             send_push(device, message)
         end
