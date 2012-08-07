@@ -14,3 +14,15 @@ rails server  -within the tweed directory
 
 for live on heroku-
 git push heroku master
+
+do this before raking the stuff in
+rails g migration nameofmigration
+
+for any changes to data types, tables, whatev for local
+rake db:migrate
+
+on heroku hit
+heroku run rake db:migrate
+
+let's me watch the logs
+heroku logs --tail
