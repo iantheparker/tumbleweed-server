@@ -31,4 +31,9 @@ heroku run rake db:migrate
 let's me watch the logs
 heroku logs --tail
 
-
+to clear a table
+rails c
+User.delete_all
+User.destroy_all
+* i may not be blowing away the table properly because i didn't get a register apn
+* make sure i'm crystal clear on keeping staging and prod up to date and using/not same db
