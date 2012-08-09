@@ -24,13 +24,16 @@ class UserController < ApplicationController
                                     :last_name => @last_name
                                    )
                                    Rails.logger.info("oh snap, new user: send push")
-                                   send_push(@device, "Welcome to Tumbleweed " + @user.first_name)                                  
+                                   #send_push(@device, "Welcome to Tumbleweed " + @user.first_name) 
+                                   render :json => @user                                
             else
                 Rails.logger.info("yo, user exists" + @user.inspect)
-                @user = User.show(@user.id)
+                #@user = User.show(@user.id)
+                render :json => @user
+                #render :text => "old user" 
             end
 
-            render :text => "i'm in register" 
+            #render :text => "i'm in register" 
         else
             render :text => "yo, pass in the variable foo" 
         end
@@ -46,7 +49,7 @@ class UserController < ApplicationController
     def send_push(device, message)
         notification=APN::Notification.new
         notification.device=device
-        notification.badge=5
+        notification.badge=1
         notification.sound=true
         notification.alert=message
         notification.save
