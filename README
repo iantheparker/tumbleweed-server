@@ -30,6 +30,8 @@ heroku run rake db:migrate
 
 let's me watch the logs
 heroku logs --tail
+heroku logs --tail --remote production
+
 
 to clear a table
 rails c
@@ -37,3 +39,15 @@ User.delete_all
 User.destroy_all
 * i may not be blowing away the table properly because i didn't get a register apn
 * make sure i'm crystal clear on keeping staging and prod up to date and using/not same db
+
+*test fourquare/push url
+?"foursquare_id"=1234&device_token=1234&first_name=testy&last_name=testerson
+
+curl -v -H "Content-Type: application/json" -X POST -d '{"screencast":{"subject":"tools"}}' \
+http://localhost:3000/raw_checkins.json
+
+curl -v -H "Content-Type: application/json" -X POST -d '{"foursquare_id": "1234",
+    "device_token": "1234",
+    "first_name": "testy",
+    "last_name": "testerson"}' \
+http://localhost:3000/register.json
