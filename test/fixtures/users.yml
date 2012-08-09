@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  id: 1
+  device_token: MyString
+  foursquare_id: MyString
+  created_at: 2012-08-09 14:30:22
+  updated_at: 2012-08-09 14:30:22
+  first_name: MyString
+  last_name: MyString
+
+two:
+  id: 1
+  device_token: MyString
+  foursquare_id: MyString
+  created_at: 2012-08-09 14:30:22
+  updated_at: 2012-08-09 14:30:22
+  first_name: MyString
+  last_name: MyString
