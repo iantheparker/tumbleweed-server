@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120809213022) do
+ActiveRecord::Schema.define(:version => 20120809234732) do
 
   create_table "apn_devices", :force => true do |t|
     t.string   "token",              :null => false
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(:version => 20120809213022) do
     t.datetime "updated_at"
     t.string   "first_name"
     t.string   "last_name"
+    t.integer  "level",         :default => 0
   end
 
   create_table "venues", :force => true do |t|
