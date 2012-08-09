@@ -1,5 +1,5 @@
 class UserController < ApplicationController
-respond_to :json
+#respond_to :json
 
     def register
         @foursquare_id = params['foursquare_id']
@@ -25,13 +25,16 @@ respond_to :json
                                    )
                                    Rails.logger.info("oh snap, new user: send push")
                                    send_push(@device, "Welcome to Tumbleweed " + @user.first_name)
-                                   respond_with(@user)
+                                   #respond_with(@user)
+                                   respond_to do |format|
+      									format.json { render :json => @user }
+      								end
             else
                 Rails.logger.info("yo, user exists" + @user.inspect)
-                respond_with(@user)
-                #respond_to do |format|
-      			#	format.json { render :json => @user }
-      			#end
+                #respond_with(@user)
+                respond_to do |format|
+      				format.json { render :json => @user }
+      			end
             end
 
             render :text => "i'm in register" 
