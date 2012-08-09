@@ -1,4 +1,5 @@
 class UserController < ApplicationController
+respond_to :json
 
     def register
         @foursquare_id = params['foursquare_id']
@@ -24,6 +25,7 @@ class UserController < ApplicationController
                                    )
                                    Rails.logger.info("oh snap, new user: send push")
                                    send_push(@device, "Welcome to Tumbleweed " + @user.first_name)
+                                   respond_with(@user)
             else
                 Rails.logger.info("yo, user exists" + @user.inspect)
             end
