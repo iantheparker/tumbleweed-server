@@ -31,6 +31,7 @@ respond_to :json
                 #respond_with(@user)
                 respond_to do |format|
       				format.json { render :json => @user }
+      			end
             end
 
             render :text => "i'm in register" 
