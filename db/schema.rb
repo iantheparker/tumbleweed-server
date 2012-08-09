@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120725015042) do
+ActiveRecord::Schema.define(:version => 20120809213022) do
 
   create_table "apn_devices", :force => true do |t|
     t.string   "token",              :null => false

@@ -8,46 +8,46 @@ gem install heroku
 https://devcenter.heroku.com/articles/quickstart
 https://devcenter.heroku.com/articles/rails3
 https://devcenter.heroku.com/articles/multiple-environments
+http://archives.ryandaigle.com/articles/2009/8/6/what-s-new-in-edge-rails-cleaner-restful-controllers-w-respond_with
 
-send a post to tumbleweed.me/register
-with fid and devToken
+to run rails locally at http://localhost:3000
+rails server  *within the tumbleweed-server directory
 
-run rails locally hit
-rails server  -within the tweed directory
+get the local console at
+rails c
 
-for live on heroku-
-git push heroku master
-*make sure heroku has access to keys - heroku keys:add ~/.ssh/id_rsa.pub
-
-do this before raking the stuff in
+adding a column to a table?
 rails g migration nameofmigration
 
-for any changes to data types, tables, whatev for local
+after any migrations/changes to data types, tables, whatev for local
 rake db:migrate
+
+for live on heroku-
+git push staging master
+git push production master
+
+* if installing heroku, make sure it has access to ssh keys 
+heroku keys:add ~/.ssh/id_rsa.pub
 
 on heroku hit
 heroku run rake db:migrate
+heroku run rake db:migrate --remote production
+
+for heroku console
+heroku run rail c
+heroku run rails c --remote production
 
 let's me watch the logs
 heroku logs --tail
 heroku logs --tail --remote production
 
 
-to clear a table
-rails c
-User.delete_all
-User.destroy_all
-* i may not be blowing away the table properly because i didn't get a register apn
-* make sure i'm crystal clear on keeping staging and prod up to date and using/not same db
-
-*test fourquare/push url
+*test GET url
 ?"foursquare_id"=1234&device_token=1234&first_name=testy&last_name=testerson
 
-curl -v -H "Content-Type: application/json" -X POST -d '{"screencast":{"subject":"tools"}}' \
-http://localhost:3000/raw_checkins.json
-
+*test POST
 curl -v -H "Content-Type: application/json" -X POST -d '{"foursquare_id": "1234",
     "device_token": "1234",
     "first_name": "testy",
     "last_name": "testerson"}' \
-http://localhost:3000/register.json
+http://localhost:3000/register
