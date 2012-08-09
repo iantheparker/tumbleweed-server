@@ -29,8 +29,7 @@ class UserController < ApplicationController
             else
                 Rails.logger.info("yo, user exists" + @user.inspect)
                 #@user = User.show(@user.id)
-                render :json => @user
-                #render :text => "old user" 
+                render :json => @user.id
             end
 
             #render :text => "i'm in register" 
