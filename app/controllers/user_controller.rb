@@ -28,6 +28,7 @@ respond_to :json
                                    respond_with(@user)
             else
                 Rails.logger.info("yo, user exists" + @user.inspect)
+                respond_with(@user)
             end
 
             render :text => "i'm in register" 
