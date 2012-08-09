@@ -24,17 +24,10 @@ class UserController < ApplicationController
                                     :last_name => @last_name
                                    )
                                    Rails.logger.info("oh snap, new user: send push")
-                                   send_push(@device, "Welcome to Tumbleweed " + @user.first_name)
-                                   #respond_with(@user)
-                                   respond_to do |format|
-      									format.json { render :json => @user }
-      								end
+                                   send_push(@device, "Welcome to Tumbleweed " + @user.first_name)                                  
             else
                 Rails.logger.info("yo, user exists" + @user.inspect)
-                #respond_with(@user)
-                respond_to do |format|
-      				format.json { render :json => @user }
-      			end
+                @user = User.show(@user.id)
             end
 
             render :text => "i'm in register" 
