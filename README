@@ -9,6 +9,7 @@ https://devcenter.heroku.com/articles/quickstart
 https://devcenter.heroku.com/articles/rails3
 https://devcenter.heroku.com/articles/multiple-environments
 http://archives.ryandaigle.com/articles/2009/8/6/what-s-new-in-edge-rails-cleaner-restful-controllers-w-respond_with
+empty heroku db - http://stackoverflow.com/questions/4820549/how-to-empty-db-in-heroku
 
 to run rails locally at http://localhost:3000
 rails server  *within the tumbleweed-server directory
@@ -51,3 +52,5 @@ curl -v -H "Content-Type: application/json" -X POST -d '{"foursquare_id": "1234"
     "first_name": "testy",
     "last_name": "testerson"}' \
 http://localhost:3000/register
+
+need to reset db ids

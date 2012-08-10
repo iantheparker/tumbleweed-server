@@ -1,5 +1,4 @@
 class UserController < ApplicationController
-#respond_to :json
 
     def register
         @foursquare_id = params['foursquare_id']
@@ -28,11 +27,8 @@ class UserController < ApplicationController
                                    render :json => @user                                
             else
                 Rails.logger.info("yo, user exists" + @user.inspect)
-                #@user = User.show(@user.id)
                 render :json => @user
             end
-
-            #render :text => "i'm in register" 
         else
             render :text => "yo, pass in the variable foo" 
         end
@@ -41,7 +37,15 @@ class UserController < ApplicationController
 
 
     def status
-        render :text => "i'm in register"
+        render :text => "i'm in status"
+    end
+    
+    def updateLevel
+    	@id = params['tumbleweedID']
+    	@user = User.find_by_id(@id)
+        @user.update_attributes(:level => (@user.level +=1))
+        
+        render :json => @user.level 
     end
 
     protected
