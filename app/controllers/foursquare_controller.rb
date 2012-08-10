@@ -15,9 +15,9 @@ class FoursquareController < ApplicationController
         venue = checkin["venue"]
         venue_id = venue["id"]
         venue_name = venue["name"]
-        venue_cat = venue["categories"]
-        venue_cat_id = venue_cat["id"]
-        logger.info(venue_cat_id)
+        #venue_cat = venue["categories"]
+        #venue_cat_id = venue_cat["id"]
+        #logger.info(venue_cat_id)
 
         foursquare_user= JSON.parse(params['user'])
         foursquare_user_id = foursquare_user["id"]
