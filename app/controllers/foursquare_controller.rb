@@ -32,6 +32,7 @@ class FoursquareController < ApplicationController
         end
 
 
+            logger.info(user)
             v = Venue.find_by_foursquare_id(venue_id)
             if v.nil?
                 v = Venue.create(:foursquare_id => venue_id, :name => venue_name, :user_id => user.id)
