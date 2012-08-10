@@ -22,7 +22,7 @@
     <td><%= user.last_name %></td>
     <td><%= user.level %></td>
     <td><%= user.foursquare_id %></td>
-    <td><%= user.device_token.concat(4) %></td>    
+    <td><%= user.device_token.truncate(4) %></td>    
     <td><%= user.updated_at %></td>
     <td><%= user.created_at %></td>
     <td><%= link_to 'Show', user %></td>

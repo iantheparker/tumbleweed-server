@@ -35,19 +35,10 @@ class UserController < ApplicationController
 
     end
 
-
     def status
         render :text => "i'm in status"
     end
     
-    def updateLevel
-    	@id = params['tumbleweedID']
-    	@user = User.find_by_id(@id)
-        @user.update_attributes(:level => (@user.level +=1))
-        
-        render :json => @user.level 
-    end
-
     protected
     def send_push(device, message)
         notification=APN::Notification.new

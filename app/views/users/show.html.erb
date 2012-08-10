@@ -27,7 +27,7 @@
 
 <p>
   <b>Device token:</b>
-  <%= @user.device_token.concat(4) %>
+  <%= @user.device_token.truncate(4) %>
 </p>
 
 <p>

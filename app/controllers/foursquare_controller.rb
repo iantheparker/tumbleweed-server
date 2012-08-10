@@ -8,11 +8,16 @@ class FoursquareController < ApplicationController
 
         logger.info(checkin)
 
+        #source = checkin["source"]
+        #source_url = source["url"]
+        #logger.info(source_url)
+        
         venue = checkin["venue"]
-
         venue_id = venue["id"]
         venue_name = venue["name"]
-        contact = venue["contact"]
+        venue_cat = venue["categories"]
+        venue_cat_id = venue_cat["id"]
+        logger.info(venue_cat_id)
 
         foursquare_user= JSON.parse(params['user'])
         foursquare_user_id = foursquare_user["id"]
@@ -29,11 +34,19 @@ class FoursquareController < ApplicationController
 
             v = Venue.find_by_foursquare_id(venue_id)
             if v.nil?
-                v = Venue.create(:foursquare_id => venue_id, :name => venue_name)
+                #v = Venue.create(:foursquare_id => venue_id, :name => venue_name, :user => user)
             end
 
             render :text => "got push"
         end
+        
+        def updateLevel
+    		@id = params['tumbleweedID']
+    		@user = User.find_by_id(@id)
+        	@user.update_attributes(:level => (@user.level +=1))
+        
+        	render :json => @user.level 
+    	end
 
         protected
         def send_push(device, message)
