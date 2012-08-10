@@ -6,8 +6,18 @@
 </p>
 
 <p>
-  <b>Device token:</b>
-  <%= @user.device_token %>
+  <b>First name:</b>
+  <%= @user.first_name %>
+</p>
+
+<p>
+  <b>Last name:</b>
+  <%= @user.last_name %>
+</p>
+
+<p>
+  <b>Level:</b>
+  <%= @user.level %>
 </p>
 
 <p>
@@ -16,8 +26,8 @@
 </p>
 
 <p>
-  <b>Created at:</b>
-  <%= @user.created_at %>
+  <b>Device token:</b>
+  <%= @user.device_token.concat(4) %>
 </p>
 
 <p>
@@ -26,13 +36,8 @@
 </p>
 
 <p>
-  <b>First name:</b>
-  <%= @user.first_name %>
-</p>
-
-<p>
-  <b>Last name:</b>
-  <%= @user.last_name %>
+  <b>Created at:</b>
+  <%= @user.created_at %>
 </p>
 
 
