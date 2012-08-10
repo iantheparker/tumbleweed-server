@@ -32,7 +32,7 @@ class FoursquareController < ApplicationController
         end
 
 
-            usermessage = "user id is " + user.id
+            usermessage = "user id is " + user.id.to_s
             logger.info(usermessage)
             v = Venue.find_by_foursquare_id(venue_id)
             if v.nil?
