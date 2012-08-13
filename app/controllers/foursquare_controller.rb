@@ -5,8 +5,10 @@ class FoursquareController < ApplicationController
         raw_checkin = RawCheckin.create(:payload => params['checkin'])
 
         checkin = JSON.parse(params['checkin'])
+        checkin_id = checkin["id"]
 
         logger.info(checkin)
+        logger.info(checkin_id)
 
         #source = checkin["source"]
         #source_url = source["url"]
