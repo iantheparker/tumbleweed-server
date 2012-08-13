@@ -8,6 +8,9 @@ class FoursquareController < ApplicationController
 
         checkin = JSON.parse(params['checkin'])
         checkin_id = checkin["id"]
+        
+        secret = params['secret']
+        logger.info(secret)
 
         logger.info(checkin)
         logger.info(checkin_id)
