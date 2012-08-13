@@ -8,9 +8,6 @@ class FoursquareController < ApplicationController
 
         checkin = JSON.parse(params['checkin'])
         checkin_id = checkin["id"]
-        
-        secret = params['secret']
-        logger.info(secret)
 
         logger.info(checkin)
         logger.info(checkin_id)
@@ -20,7 +17,16 @@ class FoursquareController < ApplicationController
         #uri = URI(url)
 		#res = Net::HTTP.post_form(uri, 'oauth_token' => devauth, 'text' => 'Keep using Tumbleweed!')
 		#puts res.body
-
+		
+		uri = URI.parse("https://api.foursquare.com/v2/venues/search?oauth_token=UT0L5SRHLHNCXFUNO3X4NKMIAFANLZBIWG13PA5F4N2L2F2M&ll=47.623055,-122.322345&limit=5&v=20120813")
+		http = Net::HTTP.new(uri.host, uri.port)
+ 
+ 		request = Net::HTTP::Get.new(uri.request_uri)
+ 
+ 		response = http.request(request)
+ 		puts response
+ 		logger.info(response)
+ 		
         #source = checkin["source"]
         #source_url = source["url"]
         #logger.info(source_url)
