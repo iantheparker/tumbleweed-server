@@ -1,3 +1,5 @@
+require 'net/http'
+
 class FoursquareController < ApplicationController
 
     def push
@@ -9,6 +11,11 @@ class FoursquareController < ApplicationController
 
         logger.info(checkin)
         logger.info(checkin_id)
+        
+        devauth = UT0L5SRHLHNCXFUNO3X4NKMIAFANLZBIWG13PA5F4N2L2F2M
+        uri = URI('https://api.foursquare.com/v2/checkins/'+checkin_id.to_s+'/reply')
+		res = Net::HTTP.post_form(uri, 'oauth_token' => devauth, 'text' => 'Keep using Tumbleweed!')
+		puts res.body
 
         #source = checkin["source"]
         #source_url = source["url"]
