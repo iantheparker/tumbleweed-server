@@ -5,6 +5,7 @@ class FoursquareController < ApplicationController
     def push
         # first just log the raw checkin from foursquare
         raw_checkin = RawCheckin.create(:payload => params['checkin'])
+        logger.info(params['']
 
         checkin = JSON.parse(params['checkin'])
         checkin_id = checkin["id"]
@@ -13,7 +14,8 @@ class FoursquareController < ApplicationController
         logger.info(checkin_id)
         
         devauth = "UT0L5SRHLHNCXFUNO3X4NKMIAFANLZBIWG13PA5F4N2L2F2M"
-        uri = URI('https://api.foursquare.com/v2/checkins/'+checkin_id.to_s+'/reply')
+        url = "https://api.foursquare.com/v2/checkins/"+checkin_id.to_s+"/reply"
+        uri = URI(url)
 		res = Net::HTTP.post_form(uri, 'oauth_token' => devauth, 'text' => 'Keep using Tumbleweed!')
 		puts res.body
 
