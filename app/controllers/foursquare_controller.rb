@@ -5,7 +5,6 @@ class FoursquareController < ApplicationController
     def push
         # first just log the raw checkin from foursquare
         raw_checkin = RawCheckin.create(:payload => params['checkin'])
-        logger.info(params['']
 
         checkin = JSON.parse(params['checkin'])
         checkin_id = checkin["id"]
