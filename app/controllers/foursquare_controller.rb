@@ -67,6 +67,7 @@ class FoursquareController < ApplicationController
     		
     	params = {:text => "Tumbleweed rules!",
                 :url => "http://tumbleweed.me"}
+                #tumbleweed app launch
 
     	query_string = "?oauth_token=#{@oauth_token}"
     	
@@ -89,7 +90,7 @@ class FoursquareController < ApplicationController
       	response = JSON.parse(http.start {|http| http.request(request)}.body)
       	response
       	#render :json => response
-      	logger.info(response)
+      	#logger.info(response)
     end
 
     protected     
