@@ -80,9 +80,9 @@ class FoursquareController < ApplicationController
 		
     end
     
-    def checkin_reply
+    def checkin_reply(checkin_id)
     	#uri = URI.parse('https://api.foursquare.com/v2/checkins/add?oauth_token=UT0L5SRHLHNCXFUNO3X4NKMIAFANLZBIWG13PA5F4N2L2F2M&venueId=449a8388f964a52098341fe3&broadcast=private&v=20120813')
-    	@checkin_id = "5029a860e4b0f6fce2e97f2d" 
+    	@checkin_id = checkin_id # "5029a860e4b0f6fce2e97f2d" 
     		
     	
     	params = {:text => "Tumbleweed rules!",
