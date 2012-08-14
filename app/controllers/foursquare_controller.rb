@@ -90,7 +90,8 @@ class FoursquareController < ApplicationController
       	response = JSON.parse(http.start {|http| http.request(request)}.body)
       	response
       	#render :json => response
-      	logger.info(response)
+      	message = "checkin source response is " + response
+      	logger.info(message)
     end
 
     protected     
