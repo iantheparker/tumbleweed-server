@@ -12,9 +12,9 @@ class FoursquareController < ApplicationController
         venue = checkin["venue"]
         venue_id = venue["id"]
         venue_name = venue["name"]
-        venue_cat = venue["categories"]
-        venue_cat_parent = venue_cat["parent"]
-        venue_cat_id = venue_cat["id"]
+        #venue_cat = venue["categories"]
+        #venue_cat_parent = venue_cat["parent"]
+        #venue_cat_id = venue_cat["id"]
         #logger.info(venue_cat_id)
 
         foursquare_user= JSON.parse(params['user'])
@@ -32,12 +32,11 @@ class FoursquareController < ApplicationController
         		#gamestate - does this checkin unlock the next level?
         		#checkin_reply(checkin_id, user.oauth_token) #with success message
         		checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
-        		#sendPush with successful checkin message
+        		device = APN::Device.find_by_token(user.device_token)
+            	message = "You checked in on foursquare at " + venue_name
+            	logger.info(message)
+            	#send_push(device, message)
         	end
-            device = APN::Device.find_by_token(user.device_token)
-            message = "You checked in on foursquare at " + venue_name
-            logger.info(message)
-            #send_push(device, message)
         end
 
         usermessage = "user id is " + user.id.to_s
@@ -68,7 +67,7 @@ class FoursquareController < ApplicationController
     	#if this game state && if checkin happened off of ios app && if checkin is under this parent category
     	#yes - update level, connected app message 'success', send push notification
     	#no - if not using foursquare mobile, then don't reply to checkin
-    	categories = ["no",]
+    	#categories = ["no",]
     end
     
     def checkin_source (checkin_id, params={}, oauth_token)
