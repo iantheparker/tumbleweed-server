@@ -5,6 +5,7 @@ class UserController < ApplicationController
         @device_id = params['device_token']
         @first_name = params['first_name']
         @last_name = params['last_name']
+        @oauth_token = params['oauth_token']
     
         if @foursquare_id and @device_id and @first_name and @last_name
             @device=APN::Device.find_by_token(@device_id)
@@ -20,7 +21,8 @@ class UserController < ApplicationController
                 @user = User.create(:device_token => @device.token, 
                                     :foursquare_id => @foursquare_id,
                                     :first_name => @first_name,
-                                    :last_name => @last_name
+                                    :last_name => @last_name,
+                                    :oauth_token => @oauth_token
                                    )
                                    Rails.logger.info("oh snap, new user: send push")
                                    #send_push(@device, "Welcome to Tumbleweed " + @user.first_name) 

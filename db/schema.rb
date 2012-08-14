@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120810215945) do
+ActiveRecord::Schema.define(:version => 20120814022039) do
 
   create_table "apn_devices", :force => true do |t|
     t.string   "token",              :null => false
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(:version => 20120810215945) do
     t.string   "first_name"
     t.string   "last_name"
     t.integer  "level",         :default => 0
+    t.string   "oauth_token"
   end
 
   create_table "venues", :force => true do |t|

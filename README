@@ -35,7 +35,7 @@ heroku run rake db:migrate
 heroku run rake db:migrate --remote production
 
 for heroku console
-heroku run rail c
+heroku run rails c
 heroku run rails c --remote production
 
 let's me watch the logs
@@ -71,6 +71,24 @@ need to reset db ids
 *foursquare push api gives the raw checkin. i want the response from the checkin because
 it includes the source "tumbleweed.me"
 
+    def search
+    	uri = URI.parse('https://api.foursquare.com/v2/venues/search?oauth_token=UT0L5SRHLHNCXFUNO3X4NKMIAFANLZBIWG13PA5F4N2L2F2M&ll=47.623055,-122.322345&limit=5&v=20120813') 
+ 		#logger.info(uri)
+		http = Net::HTTP.new(uri.host, uri.port)
+ 		http.use_ssl = true
+ 		http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+ 
+ 		request = Net::HTTP::Get.new(uri.request_uri)
+ 		#request.basic_auth 'email', 'password'
+ 
+ 		response = http.request(request)
+ 		puts response
+
+		render :json => response.body
+		#print response.body
+		
+    end
 
 
 
+finish oauth tokening it up in user, raking staging, foursquare push
