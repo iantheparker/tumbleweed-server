@@ -83,7 +83,7 @@ class FoursquareController < ApplicationController
     end
     
     def checkin_source(checkin_id)
-    	url = URI.parse("https://api.foursquare.com/v2/checkins/#{@checkin_id}?oauth_token=#{checkin_id}") 
+    	url = URI.parse("https://api.foursquare.com/v2/checkins/#{@checkin_id}?oauth_token=UT0L5SRHLHNCXFUNO3X4NKMIAFANLZBIWG13PA5F4N2L2F2M") 
 		request = Net::HTTP::Get.new("#{url.path}?#{url.query}",{"Content-Type"=>"text/json"})
 		http = Net::HTTP.new(url.host, url.port)
       	http.use_ssl = true
