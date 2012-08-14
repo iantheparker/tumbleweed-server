@@ -88,7 +88,8 @@ class FoursquareController < ApplicationController
       	http.use_ssl = true
       	response = JSON.parse(http.start {|http| http.request(request)}.body)
       	response
-      	render :json => response
+      	#render :json => response
+      	logger.info(response)
     end
 
     protected     
