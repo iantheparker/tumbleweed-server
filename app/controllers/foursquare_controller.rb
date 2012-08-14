@@ -31,7 +31,7 @@ class FoursquareController < ApplicationController
         	else
         		#gamestate - does this checkin unlock the next level?
         		#checkin_reply(checkin_id, user.oauth_token) #with success message
-        		add_reply(checkin_id, params={}, oauth_token)
+        		add_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
         		#sendPush with successful checkin message
         	end
             device = APN::Device.find_by_token(user.device_token)
