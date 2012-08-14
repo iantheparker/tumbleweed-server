@@ -9,14 +9,14 @@ class FoursquareController < ApplicationController
         checkin = JSON.parse(params['checkin'])
         checkin_id = checkin["id"]
         
-        checkin_source(checkin_id)
+        source_url = checkin_source(checkin_id)
+        logger.info(source_url)
+        if source_url =~ /tumbleweed/
+        	puts "totally from tumbleweed"
+        end
 
         logger.info(checkin)
- 		
-        #source = checkin["source"]
-        #source_url = source["url"]
-        #logger.info(source_url)
-        
+
         venue = checkin["venue"]
         venue_id = venue["id"]
         venue_name = venue["name"]
@@ -66,7 +66,8 @@ class FoursquareController < ApplicationController
     	@oauth_token = oauth_token
     		
     	params = {:text => "Tumbleweed rules!",
-                :url => "http://tumbleweed.me"}
+                :url => "http://tumbleweed.me",
+                :v => "20120813"}
                 #tumbleweed app launch
 
     	query_string = "?oauth_token=#{@oauth_token}"
@@ -78,20 +79,23 @@ class FoursquareController < ApplicationController
       	http = Net::HTTP.new(url.host, url.port)
       	http.use_ssl = true
       	response = JSON.parse(http.start {|http| http.request(request)}.body)
-      	response
       	#render :json => response
     end
     
-    def checkin_source(checkin_id)
+    def checkin_source (checkin_id)
     	@checkin_id = checkin_id
-    	url = URI.parse("https://api.foursquare.com/v2/checkins/#{@checkin_id}?oauth_token=UT0L5SRHLHNCXFUNO3X4NKMIAFANLZBIWG13PA5F4N2L2F2M") 
+    	url = URI.parse("https://api.foursquare.com/v2/checkins/#{@checkin_id}?oauth_token=UT0L5SRHLHNCXFUNO3X4NKMIAFANLZBIWG13PA5F4N2L2F2M&v=20120813") 
 		request = Net::HTTP::Get.new("#{url.path}?#{url.query}",{"Content-Type"=>"text/json"})
 		http = Net::HTTP.new(url.host, url.port)
       	http.use_ssl = true
       	response = JSON.parse(http.start {|http| http.request(request)}.body)
-      	response
-      	#render :json => response
-      	logger.info(response)
+      	response = response["response"]
+      	checkin = response["checkin"]
+      	source = checkin["source"]
+        source_url = source["url"]
+      	#render :json => source_url
+      	logger.info(source_url)
+      	return source_url
     end
 
     protected     
