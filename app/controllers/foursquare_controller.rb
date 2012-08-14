@@ -8,6 +8,8 @@ class FoursquareController < ApplicationController
 
         checkin = JSON.parse(params['checkin'])
         checkin_id = checkin["id"]
+        
+        checkin_source(checkin_id)
 
         logger.info(checkin)
  		
@@ -56,12 +58,11 @@ class FoursquareController < ApplicationController
     def game_state
     	#if this game state && if checkin happened off of ios app && if checkin is under this parent category
     	#yes - update level, connected app message 'success', send push notification
-    	#no - 
+    	#no - if not using foursquare mobile, then don't reply to checkin
     end
     
     def checkin_reply(checkin_id, oauth_token)
-    	#uri = URI.parse('https://api.foursquare.com/v2/checkins/add?oauth_token=UT0L5SRHLHNCXFUNO3X4NKMIAFANLZBIWG13PA5F4N2L2F2M&venueId=449a8388f964a52098341fe3&broadcast=private&v=20120813')
-    	@checkin_id = checkin_id # "5029a860e4b0f6fce2e97f2d" 
+    	@checkin_id = checkin_id  
     	@oauth_token = oauth_token
     		
     	params = {:text => "Tumbleweed rules!",
@@ -78,6 +79,16 @@ class FoursquareController < ApplicationController
       	response = JSON.parse(http.start {|http| http.request(request)}.body)
       	response
       	#render :json => response
+    end
+    
+    def checkin_source(checkin_id)
+    	url = URI.parse("https://api.foursquare.com/v2/checkins/#{@checkin_id}?oauth_token=#{checkin_id}") 
+		request = Net::HTTP::Get.new("#{url.path}?#{url.query}",{"Content-Type"=>"text/json"})
+		http = Net::HTTP.new(url.host, url.port)
+      	http.use_ssl = true
+      	response = JSON.parse(http.start {|http| http.request(request)}.body)
+      	response
+      	render :json => response
     end
 
     protected     
