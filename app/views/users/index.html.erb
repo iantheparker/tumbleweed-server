@@ -7,6 +7,7 @@
     <th>Last name</th>
     <th>Level</th>
     <th>Foursquare</th>
+    <th>OAuth token</th>
     <th>Device token</th>
     <th>Updated at</th>
     <th>Created at</th>
@@ -22,6 +23,7 @@
     <td><%= user.last_name %></td>
     <td><%= user.level %></td>
     <td><%= user.foursquare_id %></td>
+    <td><%= user.oauth_token.truncate(4) %></td> 
     <td><%= user.device_token.truncate(4) %></td>    
     <td><%= user.updated_at %></td>
     <td><%= user.created_at %></td>

@@ -26,6 +26,11 @@
 </p>
 
 <p>
+  <b>OAuth token:</b>
+  <%= @user.oauth_token.truncate(4) %>
+</p>
+
+<p>
   <b>Device token:</b>
   <%= @user.device_token.truncate(4) %>
 </p>

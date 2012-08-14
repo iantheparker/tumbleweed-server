@@ -8,7 +8,6 @@ class FoursquareController < ApplicationController
 
         checkin = JSON.parse(params['checkin'])
         checkin_id = checkin["id"]
-        checkin_reply(checkin_id)
 
         logger.info(checkin)
  		
@@ -29,10 +28,11 @@ class FoursquareController < ApplicationController
         user = User.find_by_foursquare_id(foursquare_user_id)
 
         if user
+        	checkin_reply(checkin_id, user.oauth_token)
             device = APN::Device.find_by_token(user.device_token)
             message = "You checked in on foursquare at " + venue_name
             logger.info(message)
-            send_push(device, message)
+            #send_push(device, message)
         end
 
         usermessage = "user id is " + user.id.to_s
@@ -53,15 +53,21 @@ class FoursquareController < ApplicationController
        	render :json => @user.level 
     end
     
-    def checkin_reply(checkin_id)
+    def game_state
+    	#if this game state && if checkin happened off of ios app && if checkin is under this parent category
+    	#yes - update level, connected app message 'success', send push notification
+    	#no - 
+    end
+    
+    def checkin_reply(checkin_id, oauth_token)
     	#uri = URI.parse('https://api.foursquare.com/v2/checkins/add?oauth_token=UT0L5SRHLHNCXFUNO3X4NKMIAFANLZBIWG13PA5F4N2L2F2M&venueId=449a8388f964a52098341fe3&broadcast=private&v=20120813')
     	@checkin_id = checkin_id # "5029a860e4b0f6fce2e97f2d" 
+    	@oauth_token = oauth_token
     		
     	params = {:text => "Tumbleweed rules!",
                 :url => "http://tumbleweed.me"}
 
-    	query_string = "?"
-      	query_string += "oauth_token=UT0L5SRHLHNCXFUNO3X4NKMIAFANLZBIWG13PA5F4N2L2F2M"
+    	query_string = "?oauth_token=#{@oauth_token}"
     	
     	url = URI.parse("https://api.foursquare.com/v2/checkins/#{@checkin_id}/reply#{query_string}")
         request = Net::HTTP::Post.new("#{url.path}?#{url.query}",{"Content-Type"=>"text/json"})
@@ -71,7 +77,7 @@ class FoursquareController < ApplicationController
       	http.use_ssl = true
       	response = JSON.parse(http.start {|http| http.request(request)}.body)
       	response
-      	render :json => response
+      	#render :json => response
     end
 
     protected     
