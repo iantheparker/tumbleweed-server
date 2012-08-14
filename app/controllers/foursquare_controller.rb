@@ -1,5 +1,3 @@
-require 'net/http'
-
 class FoursquareController < ApplicationController
 
     def push
@@ -8,12 +6,6 @@ class FoursquareController < ApplicationController
 
         checkin = JSON.parse(params['checkin'])
         checkin_id = checkin["id"]
-        
-        source_url = checkin_source(checkin_id)
-        logger.info(source_url)
-        if source_url =~ /tumbleweed/
-        	puts "totally from tumbleweed"
-        end
 
         logger.info(checkin)
 
@@ -29,8 +21,19 @@ class FoursquareController < ApplicationController
 
         user = User.find_by_foursquare_id(foursquare_user_id)
 
-        if user
-        	checkin_reply(checkin_id, user.oauth_token)
+        if user        
+        	source_url = source(checkin_id, params={}, user.oauth_token)
+        	logger.info(source_url)
+        	if source_url =~ /tumbleweed/
+        		# /tumbleweed/.match(source_url)
+        		puts "totally from tumbleweed"
+        		#update level
+        	else
+        		#gamestate - does this checkin unlock the next level?
+        		#checkin_reply(checkin_id, user.oauth_token) #with success message
+        		add_reply(checkin_id, params={}, oauth_token)
+        		#sendPush with successful checkin message
+        	end
             device = APN::Device.find_by_token(user.device_token)
             message = "You checked in on foursquare at " + venue_name
             logger.info(message)
@@ -94,8 +97,57 @@ class FoursquareController < ApplicationController
       	source = checkin["source"]
         source_url = source["url"]
       	#render :json => source_url
-      	logger.info(source_url)
+      	#logger.info(source_url)
       	return source_url
+    end
+    
+    def source (checkin_id, params={}, oauth_token)
+      @checkin_id = checkin_id
+      params = {}.merge!(params)
+
+      response = perform_graph_request("checkins/#{@checkin_id}", params, "get", oauth_token)
+      response = response["response"]
+      checkin = response["checkin"]
+      source = checkin["source"]
+      source_url = source["url"]
+      #render :json => source_url
+      logger.info(source_url)
+      return source_url
+    end
+    
+    def add_reply(checkin_id, params={}, oauth_token)
+      @checkin_id = checkin_id
+      #oauth_token = "UT0L5SRHLHNCXFUNO3X4NKMIAFANLZBIWG13PA5F4N2L2F2M"
+
+      params = {:text => "Tumbleweed rules!",
+                :url => "http://tumbleweed.me",
+                :v => "20120813"}.merge!(params)
+
+      render :json => perform_graph_request("checkins/#{@checkin_id}/reply", params, "post", oauth_token)
+    end
+    
+    def perform_graph_request(endpoint, params={}, method="get", oauth_token)
+      require 'net/http'
+      @access_token = oauth_token
+      @base_url = "https://api.foursquare.com:443/v2/"
+
+      @query_string = "?"
+      @query_string += "oauth_token=#{CGI.escape(@access_token)}" unless @access_token.empty?
+
+      if method=="get"
+        params.each{|key, val| @query_string += "&#{key}=#{val}"}
+        url = URI.parse("#{@base_url}#{endpoint}#{@query_string}")
+        request = Net::HTTP::Get.new("#{url.path}?#{url.query}",{"Content-Type"=>"text/json"})
+      else
+        url = URI.parse("#{@base_url}#{endpoint}#{@query_string}")
+        request = Net::HTTP::Post.new("#{url.path}?#{url.query}",{"Content-Type"=>"text/json"})
+        request.set_form_data(params)
+      end
+
+      http = Net::HTTP.new(url.host, url.port)
+      http.use_ssl = true
+      response = JSON.parse(http.start {|http| http.request(request)}.body)
+      return response
     end
 
     protected     
