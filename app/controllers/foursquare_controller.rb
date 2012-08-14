@@ -44,7 +44,7 @@ class FoursquareController < ApplicationController
             v = Venue.create(:foursquare_id => venue_id, :name => venue_name, :user_id => user.id)
         end
 
-        #render :text => "got push"
+        render :text => "got push"
     end
         
     def updateLevel
@@ -90,7 +90,7 @@ class FoursquareController < ApplicationController
       	response = JSON.parse(http.start {|http| http.request(request)}.body)
       	response
       	#render :json => response
-      	#logger.info(response)
+      	logger.info(response)
     end
 
     protected     
