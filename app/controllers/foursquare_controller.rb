@@ -3,11 +3,9 @@ class FoursquareController < ApplicationController
     def push
         # first just log the raw checkin from foursquare
         raw_checkin = RawCheckin.create(:payload => params['checkin'])
-        logger.info(raw_checkin)
 
         checkin = JSON.parse(params['checkin'])
         checkin_id = checkin["id"]
-
         logger.info(checkin)
 
         venue = checkin["venue"]
@@ -17,7 +15,7 @@ class FoursquareController < ApplicationController
         venue_cat0 = venue_cat[0]
         venue_cat_parents = venue_cat0["parents"]
         venue_cat_id = venue_cat0["id"]
-        puts venue_name, venue_cat0, venue_cat_parents, venue_cat_parents[0], venue_cat_id
+        puts venue_name, venue_cat_parents
 
         foursquare_user= JSON.parse(params['user'])
         foursquare_user_id = foursquare_user["id"]
@@ -30,7 +28,9 @@ class FoursquareController < ApplicationController
         		# /tumbleweed/.match(source_url)
         		puts "totally from tumbleweed, just updating level"
         		#update Level
-        		user.update_attributes(:level => (@user.level +=1))
+        		puts "user level was " + user.level.to_s
+        		user.update_attributes(:level => (user.level +=1))
+        		puts "user level is now " + user.level.to_s
         	else
         		#gamestate - does this checkin unlock the next level?
         		checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
@@ -41,8 +41,6 @@ class FoursquareController < ApplicationController
         	end
         end
 
-        usermessage = "user id is " + user.id.to_s
-        logger.info(usermessage)
         v = Venue.find_by_foursquare_id(venue_id)
         if v.nil?
             v = Venue.create(:foursquare_id => venue_id, :name => venue_name, :user_id => user.id)
@@ -73,7 +71,7 @@ class FoursquareController < ApplicationController
       	checkin = response["checkin"]
       	source = checkin["source"]
       	source_url = source["url"]
-      	logger.info(source_url)
+      	puts "source_url is" + source_url.to_s
       	return source_url
     end
     
