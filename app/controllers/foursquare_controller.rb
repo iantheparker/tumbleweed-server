@@ -14,8 +14,9 @@ class FoursquareController < ApplicationController
         venue_id = venue["id"]
         venue_name = venue["name"]
         venue_cat = venue["categories"]
-        venue_cat_parent = venue_cat["parent"]
-        venue_cat_id = venue_cat["id"]
+        venue_cat0 = venue_cat[0]
+        venue_cat_parent = venue_cat0["parent"]
+        venue_cat_id = venue_cat0["id"]
         #logger.info(venue_cat_id)
         puts venue_name, venue_cat, venue_cat_parent, venue_cat_id
 
