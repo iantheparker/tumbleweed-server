@@ -25,7 +25,7 @@ class FoursquareController < ApplicationController
         user = User.find_by_foursquare_id(foursquare_user_id)
 
         if user        
-        	#source_url = checkin_source(checkin_id, params={}, user.oauth_token)
+        	source_url = checkin_source(checkin_id, params={}, user.oauth_token)
         	if source_url =~ /tumbleweed/
         		# /tumbleweed/.match(source_url)
         		puts "totally from tumbleweed"
@@ -51,7 +51,7 @@ class FoursquareController < ApplicationController
 
         #render :text => "got push"
     end
-=begin        
+        
     def updateLevel #the route for the app - gonna have to go
     	@id = params['tumbleweedID']
     	@user = User.find_by_id(@id)
@@ -64,7 +64,7 @@ class FoursquareController < ApplicationController
     	#if this game state && if checkin happened off of ios app && if checkin is under this parent category
     	#yes - update level, connected app message 'success', send push notification
     	#no - if not using foursquare mobile, then don't reply to checkin
-    	#categories = ["no",]
+    	#categories = ["no"]
     end
     
     def checkin_source (checkin_id, params={}, oauth_token)
@@ -123,5 +123,5 @@ class FoursquareController < ApplicationController
         notification.alert=message
         notification.save
     end
-=end
+
 end
