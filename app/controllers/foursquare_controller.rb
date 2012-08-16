@@ -85,7 +85,7 @@ class FoursquareController < ApplicationController
     def checkin_reply(checkin_id, params={}, oauth_token)
       	@checkin_id = checkin_id
       	params = {:text => "Tumbleweed rules!",
-      		:url => "tumbleweed://",
+      		:url => "http://tumbleweed.me",
             :v => "20120813"}.merge!(params)
 
       	response = perform_graph_request("checkins/#{@checkin_id}/reply", params, "post", oauth_token)
