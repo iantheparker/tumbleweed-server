@@ -3,11 +3,12 @@ class FoursquareController < ApplicationController
     def push
         # first just log the raw checkin from foursquare
         raw_checkin = RawCheckin.create(:payload => params['checkin'])
+        logger.info(raw_checkin)
 
         checkin = JSON.parse(params['checkin'])
         checkin_id = checkin["id"]
 
-        logger.info(raw_checkin)
+        logger.info(checkin)
 
         venue = checkin["venue"]
         venue_id = venue["id"]
@@ -16,6 +17,7 @@ class FoursquareController < ApplicationController
         #venue_cat_parent = venue_cat["parent"]
         #venue_cat_id = venue_cat["id"]
         #logger.info(venue_cat_id)
+        puts "about to parse user"
 
         foursquare_user= JSON.parse(params['user'])
         foursquare_user_id = foursquare_user["id"]
@@ -32,8 +34,8 @@ class FoursquareController < ApplicationController
         	else
         		#gamestate - does this checkin unlock the next level?
         		#checkin_reply(checkin_id, user.oauth_token) #with success message
-        		checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
-        		device = APN::Device.find_by_token(user.device_token)
+        		#checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
+        		#device = APN::Device.find_by_token(user.device_token)
             	message = "You checked in on foursquare at " + venue_name
             	logger.info(message)
             	#send_push(device, message)
@@ -49,7 +51,7 @@ class FoursquareController < ApplicationController
 
         #render :text => "got push"
     end
-        
+=begin        
     def updateLevel #the route for the app - gonna have to go
     	@id = params['tumbleweedID']
     	@user = User.find_by_id(@id)
@@ -121,5 +123,5 @@ class FoursquareController < ApplicationController
         notification.alert=message
         notification.save
     end
-
+=end
 end
