@@ -34,7 +34,7 @@ class FoursquareController < ApplicationController
         	else
         		#gamestate - does this checkin unlock the next level?
         		#checkin_reply(checkin_id, user.oauth_token) #with success message
-        		#checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
+        		checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
         		#device = APN::Device.find_by_token(user.device_token)
             	message = "You checked in on foursquare at " + venue_name
             	logger.info(message)
