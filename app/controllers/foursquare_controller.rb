@@ -28,16 +28,16 @@ class FoursquareController < ApplicationController
         	source_url = checkin_source(checkin_id, params={}, user.oauth_token)
         	if source_url =~ /tumbleweed/
         		# /tumbleweed/.match(source_url)
-        		puts "totally from tumbleweed"
+        		puts "totally from tumbleweed, just updating level"
         		#update Level
         		user.update_attributes(:level => (@user.level +=1))
         	else
         		#gamestate - does this checkin unlock the next level?
         		checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
-        		#device = APN::Device.find_by_token(user.device_token)
-            	message = "You checked in on foursquare at " + venue_name
+        		device = APN::Device.find_by_token(user.device_token)
+            	message = "Your checkin at " + venue_name + " unlocked the next chapter!"
             	logger.info(message)
-            	#send_push(device, message)
+            	send_push(device, message)
         	end
         end
 
