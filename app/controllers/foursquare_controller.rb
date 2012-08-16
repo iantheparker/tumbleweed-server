@@ -25,7 +25,7 @@ class FoursquareController < ApplicationController
         user = User.find_by_foursquare_id(foursquare_user_id)
 
         if user        
-        	source_url = checkin_source(checkin_id, params={}, user.oauth_token)
+        	#source_url = checkin_source(checkin_id, params={}, user.oauth_token)
         	if source_url =~ /tumbleweed/
         		# /tumbleweed/.match(source_url)
         		puts "totally from tumbleweed"
