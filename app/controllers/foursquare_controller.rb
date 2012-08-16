@@ -17,7 +17,6 @@ class FoursquareController < ApplicationController
         #venue_cat_parent = venue_cat["parent"]
         #venue_cat_id = venue_cat["id"]
         #logger.info(venue_cat_id)
-        puts "about to parse user"
 
         foursquare_user= JSON.parse(params['user'])
         foursquare_user_id = foursquare_user["id"]
@@ -26,6 +25,7 @@ class FoursquareController < ApplicationController
 
         if user        
         	source_url = checkin_source(checkin_id, params={}, user.oauth_token)
+        	puts user.oauth_token
         	if source_url =~ /tumbleweed/
         		# /tumbleweed/.match(source_url)
         		puts "totally from tumbleweed"
@@ -33,7 +33,8 @@ class FoursquareController < ApplicationController
         		user.update_attributes(:level => (@user.level +=1))
         	else
         		#gamestate - does this checkin unlock the next level?
-        		#checkin_reply(checkin_id, user.oauth_token) #with success message
+        		puts "still have checkin_id?"
+        		puts checkin_id
         		checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
         		#device = APN::Device.find_by_token(user.device_token)
             	message = "You checked in on foursquare at " + venue_name
@@ -87,7 +88,8 @@ class FoursquareController < ApplicationController
       		:url => "tumbleweed://",
             :v => "20120813"}.merge!(params)
 
-      	render :json => perform_graph_request("checkins/#{@checkin_id}/reply", params, "post", oauth_token)
+      	response = perform_graph_request("checkins/#{@checkin_id}/reply", params, "post", oauth_token)
+      	puts response
     end
     
     def perform_graph_request(endpoint, params={}, method="get", oauth_token)
