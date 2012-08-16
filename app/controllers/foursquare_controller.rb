@@ -50,15 +50,13 @@ class FoursquareController < ApplicationController
             v = Venue.create(:foursquare_id => venue_id, :name => venue_name, :user_id => user.id)
         end
 
-        #render :text => "got push"
+        render :text => "got push"
     end
         
     def updateLevel #the route for the app - gonna have to go
     	@id = params['tumbleweedID']
     	@user = User.find_by_id(@id)
        	@user.update_attributes(:level => (@user.level +=1))
-        
-       	#render :json => @user.level 
     end
  
     def game_state
@@ -77,7 +75,6 @@ class FoursquareController < ApplicationController
       	checkin = response["checkin"]
       	source = checkin["source"]
       	source_url = source["url"]
-      	#render :json => source_url
       	logger.info(source_url)
       	return source_url
     end
