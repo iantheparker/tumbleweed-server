@@ -13,6 +13,9 @@ class FoursquareController < ApplicationController
         venue_name = venue["name"]
         venue_cat = venue["categories"]
         venue_cat0 = venue_cat[0]
+        if venue_cat0["name"] =~/Gas/
+        	venue_cat_name = venue_cat0["name"]
+        end
         venue_cat_parents = venue_cat0["parents"]
         venue_cat_id = venue_cat0["id"]
         puts venue_name, venue_cat_parents
@@ -35,7 +38,7 @@ class FoursquareController < ApplicationController
         		#gamestate - does this checkin unlock the next level?
         		checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
         		device = APN::Device.find_by_token(user.device_token)
-            	message = "Your checkin at " + venue_name + " unlocked the next chapter!"
+            	message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
             	logger.info(message)
             	send_push(device, message)
         	end
@@ -59,7 +62,16 @@ class FoursquareController < ApplicationController
     	#if this game state && if checkin happened off of ios app && if checkin is under this parent category
     	#yes - update level, connected app message 'success', send push notification
     	#no - if not using foursquare mobile, then don't reply to checkin
-    	#categories = ["no"]
+    	categories = ["intro", 
+    				"Shops & Services",
+    				"Food OR Nightlife Spots", 
+    				"Travel & Transport OR Shops & Services", 
+    				"Great Outdoors", 
+    				"riverbed2", 
+    				"desertchase", 
+    				"desertlynch",
+    				"campfire"]
+    	#have to send unlock message to to app for scenes
     end
     
     def checkin_source (checkin_id, params={}, oauth_token)
@@ -71,7 +83,7 @@ class FoursquareController < ApplicationController
       	checkin = response["checkin"]
       	source = checkin["source"]
       	source_url = source["url"]
-      	puts "source_url is" + source_url.to_s
+      	puts "source_url is " + source_url.to_s
       	return source_url
     end
     
