@@ -13,9 +13,7 @@ class FoursquareController < ApplicationController
         venue_name = venue["name"]
         venue_cat = venue["categories"]
         venue_cat0 = venue_cat[0]
-        if venue_cat0["name"] =~/Gas/
-        	venue_cat_name = venue_cat0["name"]
-        end
+        venue_cat_name = venue_cat0["name"]
         venue_cat_parents = venue_cat0["parents"]
         venue_cat_id = venue_cat0["id"]
         puts venue_name, venue_cat_parents
@@ -24,23 +22,27 @@ class FoursquareController < ApplicationController
         foursquare_user_id = foursquare_user["id"]
 
         user = User.find_by_foursquare_id(foursquare_user_id)
+        checkin_levels = 4 #number of foursquare venues to check in to before riverbed2
 
-        if user        
+        if user && (user.level <= checkin_levels)         
         	source_url = checkin_source(checkin_id, params={}, user.oauth_token)
         	if source_url =~ /tumbleweed/
         		# /tumbleweed/.match(source_url)
         		puts "totally from tumbleweed, just updating level"
         		#update Level
-        		puts "user level was " + user.level.to_s
         		user.update_attributes(:level => (user.level +=1))
-        		puts "user level is now " + user.level.to_s
         	else
-        		#gamestate - does this checkin unlock the next level?
-        		checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
-        		device = APN::Device.find_by_token(user.device_token)
-            	message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
-            	logger.info(message)
-            	send_push(device, message)
+        		if game_state( user.level, venue_name, venue_cat_parents[0])
+        			user.update_attributes(:level => (user.level +=1))
+        			checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
+        			device = APN::Device.find_by_token(user.device_token)
+            		message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
+            		logger.info(message)
+            		send_push(device, message)
+        		else
+        			checkin_reply(checkin_id, params={:text => "Not gonna find the next chapter here..."}, user.oauth_token)
+        		end
+        		
         	end
         end
 
@@ -52,26 +54,32 @@ class FoursquareController < ApplicationController
         render :text => "got push"
     end
         
-    def updateLevel #the route for the app - gonna have to go
+    def updateLevel
+    	#in case of foursquare push failure, should detect which was updated more recently before updating level, app or server
+    	#keep this in sync and connected with /register.
     	@id = params['tumbleweedID']
     	@user = User.find_by_id(@id)
        	@user.update_attributes(:level => (@user.level +=1))
     end
  
-    def game_state
-    	#if this game state && if checkin happened off of ios app && if checkin is under this parent category
+    def game_state(level, venue_name, venue_cat_parents)
+    	#if this game state is accessible && if checkin is under this parent category (or a gas station)
     	#yes - update level, connected app message 'success', send push notification
-    	#no - if not using foursquare mobile, then don't reply to checkin
-    	categories = ["intro", 
-    				"Shops & Services",
+    		# if checkin is one of our special venues, treat separately
+    	#no - send a hint of the right type of checkin category as the reply
+    	#maybe post photo to checkin anyway?
+    	#need data structure to 
+    	#have to send unlock message to the app for scenes
+
+    	@level = level
+    	@venue_name = venue_name
+    	@venue_cat_parents =  venue_cat_parents
+
+    	game_stater = ["Shops & Services",
     				"Food OR Nightlife Spots", 
-    				"Travel & Transport OR Shops & Services", 
-    				"Great Outdoors", 
-    				"riverbed2", 
-    				"desertchase", 
-    				"desertlynch",
-    				"campfire"]
-    	#have to send unlock message to to app for scenes
+    				"Travel & Transport OR Gas", 
+    				"Great Outdoors"]
+    	return game_stater[@level] =~ /#{@venue_name}/ || game_stater[@level] =~ /#{@venue_cat_parents}/
     end
     
     def checkin_source (checkin_id, params={}, oauth_token)

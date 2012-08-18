@@ -42,7 +42,7 @@ let's me watch the logs
 heroku logs --tail
 heroku logs --tail --remote production
 
-
+foursquare library on github - https://github.com/ronaldwan/foursquare-api
 *test GET url
 ?"foursquare_id"=1234&device_token=1234&first_name=testy&last_name=testerson
 
@@ -64,13 +64,6 @@ curl -v -H "Accept: application/json" -H "Content-Type: application/json" -X POS
 
 curl -v -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d ' {"checkin": {"id": "5024859ce4b03704678897c3", "user": {"id": "12623872", "firstName": "Sarah", "lastName": "Hallacher"}}, "venue": {"id": "4f566c9ae4b01a8c7fd8b325", "name": "The Pine Box"}}' http://localhost:3000/foursquare/push
 curl -v -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d ' {"checkin"=>{"id"=>"5024859ce4b03704678897c3", "user"=>{"id"=>"12623872", "firstName"=>"Sarah", "lastName"=>"Hallacher"}}, "venue"=>{"id"=>"4f566c9ae4b01a8c7fd8b325", "name"=>"The Pine Box"}}' http://localhost:3000/foursquare/push
-curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d ' 
-
-curl --verbose --header "Accept: application/json" --header "Content-type: application/json" --request POST --data "{'content':'I belong to AAA','title':'AAA'}" http://localhost:3000/entries
-
-curl -d 'checkin[content]=I belong to AAA' -d checkin[title]=AAA http://localhost:3000/foursquare/push'
-
 
 *need to reset db ids
 
-finish oauth tokening it up in user, raking staging, foursquare push
