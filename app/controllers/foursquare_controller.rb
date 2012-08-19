@@ -32,7 +32,7 @@ class FoursquareController < ApplicationController
         		#update Level
         		user.update_attributes(:level => (user.level +=1))
         	else
-        		if game_state( user.level, venue_name, venue_cat_parents[0])
+        		if game_state( user.level, venue_name, venue_cat_parents[0]).nil?
         			user.update_attributes(:level => (user.level +=1))
         			checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
         			device = APN::Device.find_by_token(user.device_token)
@@ -79,10 +79,10 @@ class FoursquareController < ApplicationController
     				"Food OR Nightlife Spots", 
     				"Travel & Transport OR Gas", 
     				"Great Outdoors"]
-    	return game_stater[@level] =~ /#{@venue_name}/ || game_stater[@level] =~ /#{@venue_cat_parents}/
+    	return /#{@venue_name}/.match(game_stater[@level]) || /#{@venue_cat_parents}/.match(game_stater[@level])
     end
     
-    def checkin_source (checkin_id, params={}, oauth_token)
+    def checkin_source(checkin_id, params={}, oauth_token)
     	@checkin_id = checkin_id
       	params = {}.merge!(params)
 
