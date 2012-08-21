@@ -5,5 +5,5 @@
 configatron.apn.passphrase='tweed'
 configatron.apn.feedback.passphrase='tweed'
 configatron.apn.host # => 'gateway.push.apple.com'
-configatron.apn.cert=File.join(Rails.root.to_s,"config","ckProd.pem")
-configatron.apn.feedback.cert=File.join(Rails.root.to_s,"config","ckProd.pem")
+configatron.apn.cert=File.join(Rails.root.to_s,"config","apple_push_notification_production.pem")
+configatron.apn.feedback.cert=File.join(Rails.root.to_s,"config","apple_push_notification_production.pem")

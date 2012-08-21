@@ -6,12 +6,11 @@ class UserController < ApplicationController
         @first_name = params['first_name']
         @last_name = params['last_name']
         @oauth_token = params['oauth_token']
-    
+    	    	
         if @foursquare_id and @device_id and @first_name and @last_name
             @device=APN::Device.find_by_token(@device_id)
             if @device.nil?
                 @device = APN::Device.create(:token => @device_id)
-                # maybe send a notification about a new device
             else
                 Rails.logger.info("yo, device exists" + @device.inspect)
             end
@@ -25,9 +24,13 @@ class UserController < ApplicationController
                                     :oauth_token => @oauth_token
                                    )
                                    Rails.logger.info("oh snap, new user: send push")
-                                   #send_push(@device, "Welcome to Tumbleweed " + @user.first_name) 
+                                   send_push(@device, "Welcome to Tumbleweed " + @user.first_name) 
                                    render :json => @user                                
             else
+                #if /#{@device_id}/.match(@user.device_token).nil?
+                #	@device.update_attributes(:token => @device_id)
+                #	@user.update_attributes(:device_token => @device.token)
+                #end
                 Rails.logger.info("yo, user exists" + @user.inspect)
                 render :json => @user
             end

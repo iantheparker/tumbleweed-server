@@ -22,17 +22,22 @@ class FoursquareController < ApplicationController
         foursquare_user_id = foursquare_user["id"]
 
         user = User.find_by_foursquare_id(foursquare_user_id)
+        if user.nil?
+        	return
+        end        
         checkin_levels = 4 #number of foursquare venues to check in to before riverbed2
 
-        if user && (user.level <= checkin_levels)         
+        if user.level <= checkin_levels || user.level == 8
         	source_url = checkin_source(checkin_id, params={}, user.oauth_token)
         	if source_url =~ /tumbleweed/
         		# /tumbleweed/.match(source_url)
         		puts "totally from tumbleweed, just updating level"
         		#update Level
         		user.update_attributes(:level => (user.level +=1))
+        		#test if foursquare posts a notification
+        		checkin_reply(checkin_id, params={:text => "Not gonna find the next chapter of No Man's Land here..."}, user.oauth_token)
         	else
-        		if game_state( user.level, venue_name, venue_cat_parents[0]).nil?
+        		if game_state(user.level, venue_name, venue_cat_parents[0]).nil?
         			checkin_reply(checkin_id, params={:text => "Not gonna find the next chapter of No Man's Land here..."}, user.oauth_token)
         		else
         			user.update_attributes(:level => (user.level +=1))
@@ -41,22 +46,23 @@ class FoursquareController < ApplicationController
             		message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
             		logger.info(message)
             		send_push(device, message)
+            		v = Venue.find_by_foursquare_id(venue_id)
+        			v = Venue.create(:foursquare_id => venue_id, :name => venue_name, :user_id => user.id) if v.nil?
         		end
-        		
         	end
+        else
+        	puts "user is past level where checkins matter" + user.level.to_s 
         end
 
-        v = Venue.find_by_foursquare_id(venue_id)
-        if v.nil?
-            v = Venue.create(:foursquare_id => venue_id, :name => venue_name, :user_id => user.id)
-        end
+        
+        
 
         render :text => "got push"
     end
         
     def updateLevel
     	#in case of foursquare push failure, should detect which was updated more recently before updating level, app or server
-    	#keep this in sync and connected with /register.
+    	#keep this in sync and connected with /register?
     	@id = params['tumbleweedID']
     	@user = User.find_by_id(@id)
        	@user.update_attributes(:level => (@user.level +=1))
