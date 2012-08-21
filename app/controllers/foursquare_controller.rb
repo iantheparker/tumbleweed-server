@@ -28,35 +28,30 @@ class FoursquareController < ApplicationController
         checkin_levels = 4 #number of foursquare venues to check in to before riverbed2
 
         if user.level <= checkin_levels || user.level == 8
-        	source_url = checkin_source(checkin_id, params={}, user.oauth_token)
-        	if source_url =~ /tumbleweed/
-        		# /tumbleweed/.match(source_url)
-        		puts "totally from tumbleweed, just updating level"
-        		#update Level
-        		user.update_attributes(:level => (user.level +=1))
-        		#test if foursquare posts a notification
-        		checkin_reply(checkin_id, params={:text => "Not gonna find the next chapter of No Man's Land here..."}, user.oauth_token)
-        	else
-        		if game_state(user.level, venue_name, venue_cat_parents[0]).nil?
-        			checkin_reply(checkin_id, params={:text => "Not gonna find the next chapter of No Man's Land here..."}, user.oauth_token)
-        		else
+			if game_state(user.level, venue_name, venue_cat_parents[0]).nil?
+				checkin_reply(checkin_id, params={:text => "Not gonna find the next chapter of No Man's Land here..."}, user.oauth_token)
+			else
+				user.update_attributes(:level => (user.level +=1))
+				checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
+				source_url = checkin_source(checkin_id, params={}, user.oauth_token)
+				if source_url =~ /tumbleweed/
+        			puts "totally from tumbleweed, just updating level"
         			user.update_attributes(:level => (user.level +=1))
-        			checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
-        			device = APN::Device.find_by_token(user.device_token)
-            		message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
-            		logger.info(message)
-            		send_push(device, message)
-            		v = Venue.find_by_foursquare_id(venue_id)
-        			v = Venue.create(:foursquare_id => venue_id, :name => venue_name, :user_id => user.id) if v.nil?
-        		end
-        	end
+        			return
+        		else
+					device = APN::Device.find_by_token(user.device_token)
+					message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
+					logger.info(message)
+					send_push(device, message)
+				end
+				# create/add to user list here instead of using Venue table?
+				v = Venue.find_by_foursquare_id(venue_id)
+				v = Venue.create(:foursquare_id => venue_id, :name => venue_name, :user_id => user.id) if v.nil?
+			end	
         else
         	puts "user is past level where checkins matter" + user.level.to_s 
         end
-
         
-        
-
         render :text => "got push"
     end
         
@@ -109,6 +104,22 @@ class FoursquareController < ApplicationController
 
       	response = perform_graph_request("checkins/#{@checkin_id}/reply", params, "post", oauth_token)
       	puts "checkin_reply response:", response
+    end
+    
+    def add_photo(params={}, file="")
+      require 'rest_client'
+
+      params = {:checkinId => "",
+                :tipId => "",
+                :venueId => "",
+                :broadcast => "",
+                :ll => "",
+                :llAcc => "",
+                :alt => "",
+                :altAcc => "",
+                :file => File.new(file)}
+
+      RestClient.post('https://api.foursquare.com/v2/photos/add', params)
     end
     
     def perform_graph_request(endpoint, params={}, method="get", oauth_token)
