@@ -56,6 +56,52 @@ class FoursquareController < ApplicationController
         
         render :text => "got push"
     end
+
+    def process_checkin(category, user_id)
+        # lookup 
+        FOOD = "food"
+        TRANSPORT = "transport"
+        SHOPS = "shop"
+
+        FOOD_CATEGORY = ["Restaurants", "Diners", "etc"]
+        TRANSPORT_CATEGORY = ["Rest Stop", "Gas Station", "Highway"]
+        SHOP_SUB_CATEGORY = ["Retailer", "Boutique", "Flee Market"]
+    
+        category_map = {
+            FOOD => FOOD_CATEGORY,
+            SHOPS => SHOP_SUB_CATEGORY,
+            TRANSPORT => TRANSPORT_CATEGORY
+        }
+
+        milestones = [FOOD, TRANSPORT, SHOPS, GREAT_OUTDOOR]
+        checkins = UserCheckins.find_by_user_id(user_id)
+        checkin_milestones checkins.map {|c| c.milestone_id}
+
+        remaining = milestones - checkin_milestones
+        remaining.each do |milestone|
+           categories = category_map[milestone] 
+            # check if they statisfied, if so add record to UserCheckins
+            # break
+            # return category unlocked
+        end
+
+    end
+
+    def process(user)
+        case user.level
+        when 0:
+           # check non linear checkins 
+        when 1:
+            # check if they satisfied great outdoors
+        when 2:
+            
+        when 3:
+            
+        when 4:
+        when 5:
+        end
+        
+    end
         
     def updateLevel
     	#in case of foursquare push failure, should detect which was updated more recently before updating level, app or server
