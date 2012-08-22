@@ -43,15 +43,5 @@ class UserController < ApplicationController
     def status
         render :text => "i'm in status"
     end
-    
-    protected
-    def send_push(device, message)
-        notification=APN::Notification.new
-        notification.device=device
-        notification.badge=1
-        notification.sound=true
-        notification.alert=message
-        notification.save
-        Rails.logger.info("saved notification")
-    end
+
 end

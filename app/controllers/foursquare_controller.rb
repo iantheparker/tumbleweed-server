@@ -35,12 +35,13 @@ class FoursquareController < ApplicationController
 				user.update_attributes(:level => (user.level +=1))
 				checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
 				source_url = checkin_source(checkin_id, params={}, user.oauth_token)
-				# * must send unlock message to iOS app
+				
 				if source_url =~ /tumbleweed/
         			puts "totally from tumbleweed, just updating level"
         			user.update_attributes(:level => (user.level +=1))
         			return
         		else
+					# iphone app always listens/checks when it wakes up.
 					device = APN::Device.find_by_token(user.device_token)
 					message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
 					logger.info(message)
@@ -203,14 +204,5 @@ class FoursquareController < ApplicationController
       	return response
     end
 
-    protected     
-    def send_push(device, message)
-    	notification=APN::Notification.new
-        notification.device=device
-        notification.badge=1
-        notification.sound=true
-        notification.alert=message
-        notification.save
-    end
 
 end

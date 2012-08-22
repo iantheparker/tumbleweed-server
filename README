@@ -65,5 +65,6 @@ curl -v -H "Accept: application/json" -H "Content-Type: application/json" -X POS
 curl -v -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d ' {"checkin": {"id": "5024859ce4b03704678897c3", "user": {"id": "12623872", "firstName": "Sarah", "lastName": "Hallacher"}}, "venue": {"id": "4f566c9ae4b01a8c7fd8b325", "name": "The Pine Box"}}' http://localhost:3000/foursquare/push
 curl -v -H "Accept: application/json" -H "Content-Type: application/json" -X POST -d ' {"checkin"=>{"id"=>"5024859ce4b03704678897c3", "user"=>{"id"=>"12623872", "firstName"=>"Sarah", "lastName"=>"Hallacher"}}, "venue"=>{"id"=>"4f566c9ae4b01a8c7fd8b325", "name"=>"The Pine Box"}}' http://localhost:3000/foursquare/push
 
-*need to reset db ids
+*need to reset db ids - rake db:drop, then rake db:migrate or create
 
+*whenever app wakes up, tries to send the network queue. deletes it if successful. can't rely on network. write it to disk and empties.
