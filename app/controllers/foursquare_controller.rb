@@ -26,14 +26,16 @@ class FoursquareController < ApplicationController
         	return
         end        
         checkin_levels = 4 #number of foursquare venues to check in to before riverbed2
+        last_checkin_level = 8
 
-        if user.level <= checkin_levels || user.level == 8
+        if user.level <= checkin_levels || user.level == last_checkin_level
 			if game_state(user.level, venue_name, venue_cat_parents[0]).nil?
 				checkin_reply(checkin_id, params={:text => "Not gonna find the next chapter of No Man's Land here..."}, user.oauth_token)
 			else
 				user.update_attributes(:level => (user.level +=1))
 				checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
 				source_url = checkin_source(checkin_id, params={}, user.oauth_token)
+				# * must send unlock message to iOS app
 				if source_url =~ /tumbleweed/
         			puts "totally from tumbleweed, just updating level"
         			user.update_attributes(:level => (user.level +=1))
@@ -68,8 +70,6 @@ class FoursquareController < ApplicationController
     	#yes - update level, connected app message 'success', send push notification
     		# if checkin is one of our special venues, treat separately
     	#no - send a hint of the right type of checkin category as the reply
-    	#maybe post photo to checkin anyway?
-    	#need data structure to 
     	#have to send unlock message to the app for scenes
 
     	@level = level
@@ -80,6 +80,17 @@ class FoursquareController < ApplicationController
     				"Food OR Nightlife Spots", 
     				"Travel & Transport OR Gas", 
     				"Great Outdoors"]
+    				
+    	game_stater2 = [{"a" => "Shops & Services",
+    				"b" => "Food OR Nightlife Spots", 
+    				"c" => "Travel & Transport OR Gas"}, 
+    				"Great Outdoors"]
+    	
+    	if @level.to_i == 0
+    		#if /\$(?<dollars>\d+)\.(?<cents>\d+)/ =~ level
+    	end
+    	
+    	
     	return /#{@venue_name}/.match(game_stater[@level]) || /#{@venue_cat_parents}/.match(game_stater[@level])
     end
     
