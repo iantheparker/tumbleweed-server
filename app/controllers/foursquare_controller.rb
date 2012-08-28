@@ -89,22 +89,22 @@ class FoursquareController < ApplicationController
 
     def process(user)
         case user.level
-        when 0:
+        when 0
            # check non linear checkins 
            return process_nonlinear_checkin(category, user.user_id)
-        when 1:
+        when 1
             # check if they satisfied great outdoors
             riverbed1 = ["Great Outdoors"]
             if checkin_category.join(" ") =~ /#{riverbed1}/
             	user.level += 1
             end
-        when 2:
+        when 2
             #time-based
-        when 3:
+        when 3
             #distance
-        when 4:
+        when 4
         	#somewhere new
-        when 5:
+        when 5
         	#game over
         end
         user.update_attributes(:level => (user.level +=1))
