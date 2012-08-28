@@ -86,7 +86,7 @@ class FoursquareController < ApplicationController
         end
         return unlocked
     end
-
+=begin
     def process(user)
         case user.level
         when 0
@@ -109,7 +109,7 @@ class FoursquareController < ApplicationController
         end
         user.update_attributes(:level => (user.level +=1))
     end
-        
+=end       
     def updateLevel
     	#in case of foursquare push failure, should detect which was updated more recently before updating level, app or server
     	#keep this in sync and connected with /register?
