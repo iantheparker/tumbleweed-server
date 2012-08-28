@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120814022039) do
+ActiveRecord::Schema.define(:version => 20120825024125) do
 
   create_table "apn_devices", :force => true do |t|
     t.string   "token",              :null => false
@@ -39,7 +39,11 @@ ActiveRecord::Schema.define(:version => 20120814022039) do
 
   create_table "checkins", :force => true do |t|
     t.integer  "user_id"
-    t.integer  "venue_id"
+    t.string   "checkin_id"
+    t.string   "milestone_id"
+    t.string   "venue_name"
+    t.string   "venue_category"
+    t.string   "venue_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -59,14 +63,6 @@ ActiveRecord::Schema.define(:version => 20120814022039) do
     t.string   "last_name"
     t.integer  "level",         :default => 0
     t.string   "oauth_token"
-  end
-
-  create_table "venues", :force => true do |t|
-    t.string   "name"
-    t.string   "foursquare_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "user_id"
   end
 
 end

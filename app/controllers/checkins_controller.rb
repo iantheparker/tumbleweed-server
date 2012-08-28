@@ -1,8 +1,16 @@
 class CheckinsController < ApplicationController
+  before_filter(:get_user)
+
+	private
+	def get_user
+    	@user = User.find(params[:user_id])
+	end
+  
   # GET /checkins
   # GET /checkins.json
   def index
-    @checkins = Checkin.all
+    #@checkins = Checkin.all
+    @checkins = @user.checkin.all
 
     respond_to do |format|
       format.html # index.html.erb
@@ -13,7 +21,7 @@ class CheckinsController < ApplicationController
   # GET /checkins/1
   # GET /checkins/1.json
   def show
-    @checkin = Checkin.find(params[:id])
+    @checkin = checkin.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
@@ -24,7 +32,7 @@ class CheckinsController < ApplicationController
   # GET /checkins/new
   # GET /checkins/new.json
   def new
-    @checkin = Checkin.new
+    @checkin = checkin.new
 
     respond_to do |format|
       format.html # new.html.erb
@@ -34,13 +42,14 @@ class CheckinsController < ApplicationController
 
   # GET /checkins/1/edit
   def edit
-    @checkin = Checkin.find(params[:id])
+    @checkin = @user.checkin.find(params[:id])
   end
 
   # POST /checkins
   # POST /checkins.json
   def create
-    @checkin = Checkin.new(params[:checkin])
+    #@checkin = Checkin.new(params[:checkin])
+    @checkin = @user.checkin.new(params[:checkin])
 
     respond_to do |format|
       if @checkin.save
@@ -60,11 +69,11 @@ class CheckinsController < ApplicationController
 
     respond_to do |format|
       if @checkin.update_attributes(params[:checkin])
-        format.html { redirect_to @checkin, notice: 'Checkin was successfully updated.' }
+        format.html { redirect_to @user.checkin, notice: 'Checkin was successfully updated.' }
         format.json { head :ok }
       else
         format.html { render action: "edit" }
-        format.json { render json: @checkin.errors, status: :unprocessable_entity }
+        format.json { render json: @user.checkin.errors, status: :unprocessable_entity }
       end
     end
   end

@@ -2,24 +2,36 @@
 
 <table>
   <tr>
-    <th>User</th>
-    <th>Venue</th>
+  	<th>Id</th>
+    <th>User id</th>
+    <th>Checkin_id</th>
+    <th>Milestone</th>
+    <th>Venue name</th>
+    <th>Venue category</th>
+    <th>Venue id</th>
+    <th>Updated at</th>
+    <th>Created at</th>
     <th></th>
     <th></th>
     <th></th>
   </tr>
 
-<% @checkins.each do |checkin| %>
+<% @user.checkins.each do |checkin| %>
   <tr>
+  	<td><%= checkin.id %></td>
     <td><%= checkin.user_id %></td>
-    <td><%= checkin.venue_id %></td>
-    <td><%= link_to 'Show', checkin %></td>
-    <td><%= link_to 'Edit', edit_checkin_path(checkin) %></td>
-    <td><%= link_to 'Destroy', checkin, confirm: 'Are you sure?', method: :delete %></td>
+    <td><%= checkin.checkin_id %></td>
+    <td><%= checkin.milestone_id %></td>
+    <td><%= checkin.venue_name %></td>
+    <td><%= checkin.venue_category %></td> 
+    <td><%= checkin.venue_id %></td> 
+    <td><%= checkin.updated_at %></td>
+    <td><%= checkin.created_at %></td>
+    
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New Checkin', new_checkin_path %>
+<%= link_to 'New Checkin', new_user_checkin_path %>

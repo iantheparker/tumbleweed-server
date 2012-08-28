@@ -9,14 +9,11 @@ class FoursquareController < ApplicationController
         logger.info(checkin)
 
         venue = checkin["venue"]
-        venue_id = venue["id"]
         venue_name = venue["name"]
-        venue_cat = venue["categories"]
-        venue_cat0 = venue_cat[0]
-        venue_cat_name = venue_cat0["name"]
-        venue_cat_parents = venue_cat0["parents"]
-        venue_cat_id = venue_cat0["id"]
-        puts venue_name, venue_cat_parents
+        #if gas don't save parents - A Gas station checkin should only unlock the gas scene
+        venue_cat_parents = venue["categories"][0]["parents"]
+        venue_type = venue_cat_parents << venue_name
+        puts venue_type
 
         foursquare_user= JSON.parse(params['user'])
         foursquare_user_id = foursquare_user["id"]
@@ -32,76 +29,85 @@ class FoursquareController < ApplicationController
 			if game_state(user.level, venue_name, venue_cat_parents[0]).nil?
 				checkin_reply(checkin_id, params={:text => "Not gonna find the next chapter of No Man's Land here..."}, user.oauth_token)
 			else
-				user.update_attributes(:level => (user.level +=1))
 				checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
 				source_url = checkin_source(checkin_id, params={}, user.oauth_token)
-				
-				if source_url =~ /tumbleweed/
-        			puts "totally from tumbleweed, just updating level"
-        			user.update_attributes(:level => (user.level +=1))
-        			return
-        		else
-					# iphone app always listens/checks when it wakes up.
+				if /tumbleweed/.match(source_url).nil?
+					# if user didn't check in using the iOS app, then send a push notification
 					device = APN::Device.find_by_token(user.device_token)
 					message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
 					logger.info(message)
 					send_push(device, message)
 				end
-				# create/add to user list here instead of using Venue table?
-				v = Venue.find_by_foursquare_id(venue_id)
-				v = Venue.create(:foursquare_id => venue_id, :name => venue_name, :user_id => user.id) if v.nil?
+				successful_checkin = Checkin.create(:user_id => user_id,
+            										:checkin_id => checkin_id,
+            										:milestone_id => milestone,
+            										:venue_name => venue_name,
+            										:venue_category => venue["categories"][0],
+            										:venue_id => venue["id"])
 			end	
         else
-        	puts "user is past level where checkins matter" + user.level.to_s 
+        	puts "user isn't at a foursquare level" + user.level.to_s 
         end
         
         render :text => "got push"
     end
 
-    def process_checkin(category, user_id)
-        # lookup 
-        FOOD = "food"
-        TRANSPORT = "transport"
-        SHOPS = "shop"
-
-        FOOD_CATEGORY = ["Restaurants", "Diners", "etc"]
-        TRANSPORT_CATEGORY = ["Rest Stop", "Gas Station", "Highway"]
-        SHOP_SUB_CATEGORY = ["Retailer", "Boutique", "Flee Market"]
-    
+    def process_nonlinear_checkin(checkin_category, user_id)
+        deal = "deal"
+        saloon = "saloon"
+        gas = "gas"
+        
         category_map = {
-            FOOD => FOOD_CATEGORY,
-            SHOPS => SHOP_SUB_CATEGORY,
-            TRANSPORT => TRANSPORT_CATEGORY
+            deal => ["Shops & Services"],
+        	saloon => ["Food", "Nightlife Spots"],
+        	gas => ["Travel & Transport", "Gas Station"]
         }
 
-        milestones = [FOOD, TRANSPORT, SHOPS, GREAT_OUTDOOR]
-        checkins = UserCheckins.find_by_user_id(user_id)
-        checkin_milestones checkins.map {|c| c.milestone_id}
-
-        remaining = milestones - checkin_milestones
+        milestones = [deal, saloon, gas]
+        checkins = Checkin.find_all_by_user_id(user_id)
+        checked_milestones = checkins.map {|c| c.milestone_id}
+        
+        remaining = milestones - checked_milestones
+        if checkin_category.join(" ") =~ /Gas/ && remaining.join(" ") =~ /#{gas}/
+        	return gas
+        end
         remaining.each do |milestone|
            categories = category_map[milestone] 
-            # check if they statisfied, if so add record to UserCheckins
-            # break
-            # return category unlocked
+           categories.map { |category|
+            	# add for each position in the categories array, check if they statisfied, if so add record to UserCheckins
+            	if checkin_category.join(" ") =~ /#{category}/
+            		puts "successful unlock of " + milestone + " chapter"
+            		if remaining.count == 1
+            			user.level += 1
+            		end
+            	unlocked = milestone            	
+            	end
+            }
         end
-
+        return unlocked
     end
 
     def process(user)
         case user.level
         when 0:
            # check non linear checkins 
+           return process_nonlinear_checkin(category, user.user_id)
         when 1:
             # check if they satisfied great outdoors
+            riverbed1 = ["Great Outdoors"]
+            if checkin_category.join(" ") =~ /#{riverbed1}/
+            	user.level += 1
+            end
         when 2:
-            
+            #time-based
         when 3:
-            
+            #distance
         when 4:
+        	#somewhere new
         when 5:
+        	#game over
         end
-        
+        user.update_attributes(:level => (user.level +=1))
     end
         
     def updateLevel
@@ -127,16 +133,6 @@ class FoursquareController < ApplicationController
     				"Food OR Nightlife Spots", 
     				"Travel & Transport OR Gas", 
     				"Great Outdoors"]
-    				
-    	game_stater2 = [{"a" => "Shops & Services",
-    				"b" => "Food OR Nightlife Spots", 
-    				"c" => "Travel & Transport OR Gas"}, 
-    				"Great Outdoors"]
-    	
-    	if @level.to_i == 0
-    		#if /\$(?<dollars>\d+)\.(?<cents>\d+)/ =~ level
-    	end
-    	
     	
     	return /#{@venue_name}/.match(game_stater[@level]) || /#{@venue_cat_parents}/.match(game_stater[@level])
     end
@@ -153,7 +149,7 @@ class FoursquareController < ApplicationController
       	puts "source_url is " + source_url.to_s
       	return source_url
     end
-    
+   
     def checkin_reply(checkin_id, params={}, oauth_token)
       	@checkin_id = checkin_id
       	params = {:text => "Tumbleweed rules!",

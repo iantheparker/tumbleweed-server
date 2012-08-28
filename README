@@ -10,6 +10,15 @@ https://devcenter.heroku.com/articles/rails3
 https://devcenter.heroku.com/articles/multiple-environments
 http://archives.ryandaigle.com/articles/2009/8/6/what-s-new-in-edge-rails-cleaner-restful-controllers-w-respond_with
 empty heroku db - http://stackoverflow.com/questions/4820549/how-to-empty-db-in-heroku
+update link_to links after has_many http://ariejan.net/2007/01/23/rails-nested-resource-scaffold
+
+drop table in sql
+sqlite3 db/development.sqlite3 
+sqlite> drop table table_name;
+sqlite> .quit
+
+APN gem
+https://github.com/PRX/apn_on_rails
 
 to run rails locally at http://localhost:3000
 rails server  *within the tumbleweed-server directory

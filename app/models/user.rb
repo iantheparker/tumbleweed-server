@@ -1,3 +1,3 @@
 class User < ActiveRecord::Base
-has_many :venues
+	has_many :checkins, :dependent => :destroy
 end
