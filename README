@@ -12,6 +12,9 @@ http://archives.ryandaigle.com/articles/2009/8/6/what-s-new-in-edge-rails-cleane
 empty heroku db - http://stackoverflow.com/questions/4820549/how-to-empty-db-in-heroku
 update link_to links after has_many http://ariejan.net/2007/01/23/rails-nested-resource-scaffold
 
+check ruby syntax
+ruby -w filename.rb
+
 drop table in sql
 sqlite3 db/development.sqlite3 
 sqlite> drop table table_name;

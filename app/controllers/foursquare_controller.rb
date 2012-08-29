@@ -42,9 +42,10 @@ class FoursquareController < ApplicationController
 												:venue_category => venue["categories"][0],
 												:venue_id => venue["id"])
 		end	
+		
         render :text => "got push"
     end
-    
+  
     def process_checkin(user, categories=[])
     	unlocked = nil
     	checkin_text = nil
@@ -52,14 +53,14 @@ class FoursquareController < ApplicationController
         case user.level
         when 0 
            # check non linear checkins 
-           unlocked = process_nonlinear_checkin(user, categories)
+           #unlocked = process_nonlinear_checkin(user, categories)
            checkin_text = "reply"
         when 1 
             # check if they satisfied great outdoors
             riverbed1 = "Great Outdoors"
             if categories.join(" ") =~ /#{riverbed1}/
             	unlocked = "riverbed1"
-            	user.level += 1
+            	user.update_attributes(:level => (user.level +=1))
             end
             checkin_text = "reply"
         when 2 
@@ -76,10 +77,12 @@ class FoursquareController < ApplicationController
         end
         
         #checkin_text will be non-nil if user is at appropriate level
-        if checkin_text and unlocked
+        if checkin_text && unlocked
         	checkin_text =  "You unlocked the next chapter of No Man's Land!"
-        else if checkin_text
+        elsif checkin_text
         	checkin_text =  "Not gonna find the next chapter of No Man's Land here..."
+        else
+        	puts "Don't need to send checkin_text"
         end
         
         # if categories is empty, it means this wasn't called from a checkin
@@ -89,7 +92,7 @@ class FoursquareController < ApplicationController
         	return unlocked, checkin_text
         end
     end
-    
+
     def process_nonlinear_checkin(user, checkin_category)
         unlocked = nil
         
@@ -100,8 +103,7 @@ class FoursquareController < ApplicationController
         category_map = {
             deal => ["Shops & Services"],
         	saloon => ["Food", "Nightlife Spots"],
-        	gas => ["Travel & Transport", "Gas Station"]
-        }
+        	gas => ["Travel & Transport", "Gas Station"]}
 
         milestones = [deal, saloon, gas]
         checkins = Checkin.find_all_by_user_id(user.id)
@@ -118,34 +120,15 @@ class FoursquareController < ApplicationController
             	if checkin_category.join(" ") =~ /#{category}/
             		puts "successful unlock of " + milestone + " chapter"
             		if remaining.count == 1
-            			user.level += 1
+            			user.update_attributes(:level => (user.level +=1))
             		end
-            	unlocked = milestone            	
+            		unlocked = milestone            	
             	end
             }
         end
         return unlocked
     end
- 
-    def game_state(level, venue_name, venue_cat_parents)
-    	#if this game state is accessible && if checkin is under this parent category (or a gas station)
-    	#yes - update level, connected app message 'success', send push notification
-    		# if checkin is one of our special venues, treat separately
-    	#no - send a hint of the right type of checkin category as the reply
-    	#have to send unlock message to the app for scenes
 
-    	@level = level
-    	@venue_name = venue_name
-    	@venue_cat_parents =  venue_cat_parents
-
-    	game_stater = ["Shops & Services",
-    				"Food OR Nightlife Spots", 
-    				"Travel & Transport OR Gas", 
-    				"Great Outdoors"]
-    	
-    	return /#{@venue_name}/.match(game_stater[@level]) || /#{@venue_cat_parents}/.match(game_stater[@level])
-    end
-    
     def checkin_source(checkin_id, params={}, oauth_token)
     	@checkin_id = checkin_id
       	params = {}.merge!(params)
@@ -158,7 +141,7 @@ class FoursquareController < ApplicationController
       	puts "source_url is " + source_url.to_s
       	return source_url
     end
-   
+  
     def checkin_reply(checkin_id, params={}, oauth_token)
       	@checkin_id = checkin_id
       	params = {:text => "Tumbleweed rules!",
@@ -167,22 +150,6 @@ class FoursquareController < ApplicationController
 
       	response = perform_graph_request("checkins/#{@checkin_id}/reply", params, "post", oauth_token)
       	puts "checkin_reply response:", response
-    end
-    
-    def add_photo(params={}, file="")
-      require 'rest_client'
-
-      params = {:checkinId => "",
-                :tipId => "",
-                :venueId => "",
-                :broadcast => "",
-                :ll => "",
-                :llAcc => "",
-                :alt => "",
-                :altAcc => "",
-                :file => File.new(file)}
-
-      RestClient.post('https://api.foursquare.com/v2/photos/add', params)
     end
     
     def perform_graph_request(endpoint, params={}, method="get", oauth_token)
@@ -208,6 +175,5 @@ class FoursquareController < ApplicationController
       	response = JSON.parse(http.start {|http| http.request(request)}.body)
       	return response
     end
-
 
 end

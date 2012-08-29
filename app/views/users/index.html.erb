@@ -24,8 +24,8 @@
     <td><%= user.last_name %></td>
     <td><%= user.level %></td>
     <td><%= user.foursquare_id %></td>
-    <td><%= user.oauth_token %></td> 
-    <td><%= user.device_token %></td> 
+    <td><%= user.oauth_token.truncate(4) %></td> 
+    <td><%= user.device_token.truncate(4) %></td> 
     <td><%= link_to 'Checkins', user_checkins_path(user) %></td>   
     <td><%= user.updated_at %></td>
     <td><%= user.created_at %></td>
