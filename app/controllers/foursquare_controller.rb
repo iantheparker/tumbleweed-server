@@ -53,7 +53,7 @@ class FoursquareController < ApplicationController
         case user.level
         when 0 
            # check non linear checkins 
-           #unlocked = process_nonlinear_checkin(user, categories)
+           unlocked = process_nonlinear_checkin(user, categories)
            checkin_text = "reply"
         when 1 
             # check if they satisfied great outdoors
