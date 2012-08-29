@@ -10,7 +10,6 @@ class FoursquareController < ApplicationController
 
         venue = checkin["venue"]
         venue_name = venue["name"]
-        #if gas don't save parents - A Gas station checkin should only unlock the gas scene
         venue_cat_parents = venue["categories"][0]["parents"]
         venue_type = venue_cat_parents << venue_name
         puts venue_type
@@ -22,37 +21,78 @@ class FoursquareController < ApplicationController
         if user.nil?
         	return
         end        
-        checkin_levels = 4 #number of foursquare venues to check in to before riverbed2
-        last_checkin_level = 8
 
-        if user.level <= checkin_levels || user.level == last_checkin_level
-			if game_state(user.level, venue_name, venue_cat_parents[0]).nil?
-				checkin_reply(checkin_id, params={:text => "Not gonna find the next chapter of No Man's Land here..."}, user.oauth_token)
-			else
-				checkin_reply(checkin_id, params={:text => "You unlocked the next chapter!"}, user.oauth_token)
-				source_url = checkin_source(checkin_id, params={}, user.oauth_token)
-				if /tumbleweed/.match(source_url).nil?
-					# if user didn't check in using the iOS app, then send a push notification
-					device = APN::Device.find_by_token(user.device_token)
-					message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
-					logger.info(message)
-					send_push(device, message)
-				end
-				successful_checkin = Checkin.create(:user_id => user_id,
-            										:checkin_id => checkin_id,
-            										:milestone_id => milestone,
-            										:venue_name => venue_name,
-            										:venue_category => venue["categories"][0],
-            										:venue_id => venue["id"])
-			end	
-        else
-        	puts "user isn't at a foursquare level" + user.level.to_s 
-        end
-        
+		unlocked_milestone, checkin_text = process_checkin(user, venue_type)
+		if checkin_text
+			checkin_reply(checkin_id, params={:text => checkin_text}, user.oauth_token)
+		end
+		if unlocked_milestone
+			source_url = checkin_source(checkin_id, params={}, user.oauth_token)
+			if /tumbleweed/.match(source_url).nil?
+				# if user didn't check in using the iOS app, then send a push notification
+				device = APN::Device.find_by_token(user.device_token)
+				message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
+				logger.info(message)
+				send_push(device, message)
+			end
+			successful_checkin = Checkin.create(:user_id => user_id,
+												:checkin_id => checkin_id,
+												:milestone_id => unlocked_milestone,
+												:venue_name => venue_name,
+												:venue_category => venue["categories"][0],
+												:venue_id => venue["id"])
+		end	
         render :text => "got push"
     end
-
-    def process_nonlinear_checkin(checkin_category, user_id)
+    
+    def process_checkin(user, categories=[])
+    	unlocked = nil
+    	checkin_text = nil
+    	
+        case user.level
+        when 0 
+           # check non linear checkins 
+           unlocked = process_nonlinear_checkin(user, categories)
+           checkin_text = "reply"
+        when 1 
+            # check if they satisfied great outdoors
+            riverbed1 = "Great Outdoors"
+            if categories.join(" ") =~ /#{riverbed1}/
+            	unlocked = "riverbed1"
+            	user.level += 1
+            end
+            checkin_text = "reply"
+        when 2 
+            puts "time-based level"
+        when 3 
+            puts "distance-based level"
+        when 4 
+        	#somewhere new
+        	checkin_text = "reply"
+        when 5 
+        	#game over
+        else
+        	puts "game state error: out of bounds"
+        end
+        
+        #checkin_text will be non-nil if user is at appropriate level
+        if checkin_text and unlocked
+        	checkin_text =  "You unlocked the next chapter of No Man's Land!"
+        else if checkin_text
+        	checkin_text =  "Not gonna find the next chapter of No Man's Land here..."
+        end
+        
+        # if categories is empty, it means this wasn't called from a checkin
+        if categories.empty?
+        	return unlocked
+        else
+        	return unlocked, checkin_text
+        end
+    end
+    
+    def process_nonlinear_checkin(user, checkin_category)
+        unlocked = nil
+        
         deal = "deal"
         saloon = "saloon"
         gas = "gas"
@@ -64,17 +104,17 @@ class FoursquareController < ApplicationController
         }
 
         milestones = [deal, saloon, gas]
-        checkins = Checkin.find_all_by_user_id(user_id)
+        checkins = Checkin.find_all_by_user_id(user.id)
         checked_milestones = checkins.map {|c| c.milestone_id}
         
         remaining = milestones - checked_milestones
+        # if they checked in to a gas station and the gas scene is locked, hit that case first
         if checkin_category.join(" ") =~ /Gas/ && remaining.join(" ") =~ /#{gas}/
         	return gas
         end
         remaining.each do |milestone|
            categories = category_map[milestone] 
            categories.map { |category|
-            	# add for each position in the categories array, check if they statisfied, if so add record to UserCheckins
             	if checkin_category.join(" ") =~ /#{category}/
             		puts "successful unlock of " + milestone + " chapter"
             		if remaining.count == 1
@@ -85,37 +125,6 @@ class FoursquareController < ApplicationController
             }
         end
         return unlocked
-    end
-=begin
-    def process(user)
-        case user.level
-        when 0
-           # check non linear checkins 
-           return process_nonlinear_checkin(category, user.user_id)
-        when 1
-            # check if they satisfied great outdoors
-            riverbed1 = ["Great Outdoors"]
-            if checkin_category.join(" ") =~ /#{riverbed1}/
-            	user.level += 1
-            end
-        when 2
-            #time-based
-        when 3
-            #distance
-        when 4
-        	#somewhere new
-        when 5
-        	#game over
-        end
-        user.update_attributes(:level => (user.level +=1))
-    end
-=end       
-    def updateLevel
-    	#in case of foursquare push failure, should detect which was updated more recently before updating level, app or server
-    	#keep this in sync and connected with /register?
-    	@id = params['tumbleweedID']
-    	@user = User.find_by_id(@id)
-       	@user.update_attributes(:level => (@user.level +=1))
     end
  
     def game_state(level, venue_name, venue_cat_parents)

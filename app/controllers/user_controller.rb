@@ -43,5 +43,7 @@ class UserController < ApplicationController
     def status
         render :text => "i'm in status"
     end
+    
+    #unlock distance method
 
 end
