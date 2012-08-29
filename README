@@ -80,3 +80,4 @@ curl -v -H "Accept: application/json" -H "Content-Type: application/json" -X POS
 *need to reset db ids - rake db:drop, then rake db:migrate or create
 
 *whenever app wakes up, tries to send the network queue. deletes it if successful. can't rely on network. write it to disk and empties.
+* what if push notifications are disabled on the phone? anything special to consider on the app side?

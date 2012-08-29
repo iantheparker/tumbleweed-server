@@ -35,7 +35,7 @@ class FoursquareController < ApplicationController
 				logger.info(message)
 				send_push(device, message)
 			end
-			successful_checkin = Checkin.create(:user_id => user_id,
+			successful_checkin = Checkin.create(:user_id => user.id,
 												:checkin_id => checkin_id,
 												:milestone_id => unlocked_milestone,
 												:venue_name => venue_name,
@@ -72,8 +72,6 @@ class FoursquareController < ApplicationController
         	checkin_text = "reply"
         when 5 
         	#game over
-        else
-        	puts "game state error: out of bounds"
         end
         
         #checkin_text will be non-nil if user is at appropriate level
@@ -81,8 +79,6 @@ class FoursquareController < ApplicationController
         	checkin_text =  "You unlocked the next chapter of No Man's Land!"
         elsif checkin_text
         	checkin_text =  "Not gonna find the next chapter of No Man's Land here..."
-        else
-        	puts "Don't need to send checkin_text"
         end
         
         # if categories is empty, it means this wasn't called from a checkin
