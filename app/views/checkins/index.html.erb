@@ -27,9 +27,9 @@
     <td><%= checkin.venue_id %></td> 
     <td><%= checkin.updated_at %></td>
     <td><%= checkin.created_at %></td>
-    <td><%= link_to 'Show', user %></td>
-    <td><%= link_to 'Edit', edit_user_checkin_path(user) %></td>
-    <td><%= link_to 'Destroy', user, confirm: 'Are you sure?', method: :delete %></td>
+    <td><%= link_to 'Show', user_checkin_path(user, checkin) %></td>
+    <td><%= link_to 'Edit', edit_user_checkin_path(user, checkin) %></td>
+    <td><%= link_to 'Destroy', checkin, confirm: 'Are you sure?', method: :delete %></td>
     
   </tr>
 <% end %>

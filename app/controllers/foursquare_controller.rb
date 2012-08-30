@@ -32,7 +32,7 @@ class FoursquareController < ApplicationController
 												:checkin_id => checkin_id,
 												:milestone_id => unlocked_milestone,
 												:venue_name => venue_name,
-												:venue_category => venue["categories"][0],
+												:venue_category => venue["categories"][0]["name"],
 												:venue_id => venue["id"])
 			source_url = checkin_source(checkin_id, params={}, user.oauth_token)
 			if /tumbleweed/.match(source_url).nil?
