@@ -54,6 +54,12 @@ let's me watch the logs
 heroku logs --tail
 heroku logs --tail --remote production
 
+reset locally
+rake db:reset
+
+reset on heroku
+heroku pg:reset SHARED_DATABASE
+
 foursquare library on github - https://github.com/ronaldwan/foursquare-api
 *test GET url
 ?"foursquare_id"=1234&device_token=1234&first_name=testy&last_name=testerson
