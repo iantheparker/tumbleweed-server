@@ -90,6 +90,6 @@ curl -v -H "Accept: application/json" -H "Content-Type: application/json" -X POS
 
 variety unlocked saloon because of food
 met onlocked deal because of shop
-should be shop and !food, and nightlife or restaurant
+should be shop and !food (or at least groc store or gas), and nightlife or restaurant
 
 rawcheckins broke and checkin.html
