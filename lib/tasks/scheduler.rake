@@ -6,8 +6,9 @@ task :unlock_time => :environment do
     	if user.checkins.last.updated_at #> 2.hours.ago
     		device = APN::Device.find_by_token(user.device_token)
 			message = "The next chapter of No Man's Land is ready for you."
-			logger.info(message)
-			send_push(device, message)
+			Rails.logger.info(message)
+			user.send_push(device, message)
+			puts user.first_name
     	end
     }
     puts "done."

@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   
-  protected
+  #protected
     def send_push(device, message)
         notification=APN::Notification.new
         notification.device=device
