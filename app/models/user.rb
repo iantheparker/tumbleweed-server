@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
 		# get last checkin
 		# compare time elapsed
 		# if > 1.hour, send push, bump level
+		#puts "check_time_elapsed"
 	end
 	
 end
