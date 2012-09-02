@@ -40,7 +40,7 @@ class FoursquareController < ApplicationController
 				device = APN::Device.find_by_token(user.device_token)
 				message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
 				logger.info(message)
-				send_push(device, message)
+				user.send_push(device, message)
 			end
 		end	
 		

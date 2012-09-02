@@ -9,7 +9,8 @@ task :unlock_time => :environment do
 			Rails.logger.info(message)
 			user.send_push(device, message)
 			puts user.first_name
-			#update level
+			user.level =+ 1
+			user.save
     	end
     }
     puts "done."

@@ -24,7 +24,7 @@ class UserController < ApplicationController
                                     :oauth_token => @oauth_token
                                    )
                                    Rails.logger.info("oh snap, new user: send push")
-                                   send_push(@device, "Welcome to Tumbleweed " + @user.first_name) 
+                                   @user.send_push(@device, "Welcome to Tumbleweed " + @user.first_name) 
                                    render :json => @user                                
             else
                 #if /#{@device_id}/.match(@user.device_token).nil?

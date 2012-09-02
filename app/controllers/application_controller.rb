@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  
-  #protected
+=begin  
+  protected
     def send_push(device, message)
         notification=APN::Notification.new
         notification.device=device
@@ -11,4 +11,5 @@ class ApplicationController < ActionController::Base
         notification.save
         Rails.logger.info("saved notification")
     end
+=end
 end
