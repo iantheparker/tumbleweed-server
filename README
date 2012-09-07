@@ -91,5 +91,8 @@ curl -v -H "Accept: application/json" -H "Content-Type: application/json" -X POS
 variety unlocked saloon because of food
 met onlocked deal because of shop
 should be shop and !food (or at least groc store or gas), and nightlife or restaurant
+also, not liking that when i use tumbleweed for checkin, i get a "not gonna unlock" message from foursquare.
 
-rawcheckins broke and checkin.html
+fix rawcheckins and checkin.html
+add foursquare list creation
+add distance-traveled method
