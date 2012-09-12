@@ -88,8 +88,8 @@ curl -v -H "Accept: application/json" -H "Content-Type: application/json" -X POS
 *whenever app wakes up, tries to send the network queue. deletes it if successful. can't rely on network. write it to disk and empties.
 * what if push notifications are disabled on the phone? anything special to consider on the app side?
 
-variety unlocked saloon because of food
-met onlocked deal because of shop
+variety coffee unlocked saloon because of food
+met grocery unlocked deal because of shop
 should be shop and !food (or at least groc store or gas), and nightlife or restaurant
 also, not liking that when i use tumbleweed for checkin, i get a "not gonna unlock" message from foursquare.
 
