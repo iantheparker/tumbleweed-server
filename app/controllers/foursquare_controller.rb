@@ -29,11 +29,11 @@ class FoursquareController < ApplicationController
 		if unlocked_milestone
 			puts checkin_id
 			successful_checkin = Checkin.create(:user_id => user.id,
-												:checkin_id => checkin_id,
-												:milestone_id => unlocked_milestone,
-												:venue_name => venue_name,
-												:venue_category => venue["categories"][0]["name"],
-												:venue_id => venue["id"])
+							    :checkin_id => checkin_id,
+							    :milestone_id => unlocked_milestone,
+							    :venue_name => venue_name,
+							    :venue_category => venue["categories"][0]["name"],
+							    :venue_id => venue["id"])
 			source_url = checkin_source(checkin_id, params={}, user.oauth_token)
 			if /tumbleweed/.match(source_url).nil?
 				# if user didn't check in using the iOS app, then send a push notification
