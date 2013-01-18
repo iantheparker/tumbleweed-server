@@ -21,8 +21,7 @@ class UserController < ApplicationController
                                     :foursquare_id => @foursquare_id,
                                     :first_name => @first_name,
                                     :last_name => @last_name,
-                                    :oauth_token => @oauth_token
-                                   )
+                                    :oauth_token => @oauth_token)
                                    Rails.logger.info("oh snap, new user: send push")
                                    @user.send_push(@device, "Welcome to Tumbleweed " + @user.first_name) 
                                    render :json => @user                                

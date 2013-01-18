@@ -1,17 +1,11 @@
 class CheckinsController < ApplicationController
-  before_filter(:get_user)
 
-	private
-	def get_user
-    	@user = User.find(params[:user_id])
-	end
-  
+  before_filter :get_user
+
   # GET /checkins
   # GET /checkins.json
   def index
-    #@checkins = Checkin.all
-    @checkins = @user.checkin.all
-
+    @checkins = @user.checkins
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @checkins }
@@ -89,4 +83,9 @@ class CheckinsController < ApplicationController
       format.json { head :ok }
     end
   end
+
+  private
+	def get_user
+		@user = User.find(params[:user_id])
+	end
 end
