@@ -1,5 +1,5 @@
 class UserController < ApplicationController
-
+    skip_before_filter :verify_authenticity_token
     def register
         @foursquare_id = params['foursquare_id']
         @device_id = params['device_token']
