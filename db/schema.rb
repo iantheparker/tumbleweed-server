@@ -15,8 +15,8 @@ ActiveRecord::Schema.define(:version => 20130121003822) do
 
   create_table "apn_devices", :force => true do |t|
     t.string   "token",              :null => false
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "last_registered_at"
   end
 
@@ -31,8 +31,8 @@ ActiveRecord::Schema.define(:version => 20130121003822) do
     t.integer  "badge"
     t.text     "custom_properties"
     t.datetime "sent_at"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "apn_notifications", ["device_id"], :name => "index_apn_notifications_on_device_id"
@@ -44,21 +44,21 @@ ActiveRecord::Schema.define(:version => 20130121003822) do
     t.string   "venue_name"
     t.string   "venue_category"
     t.string   "venue_id"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "raw_checkins", :force => true do |t|
     t.text     "payload"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "users", :force => true do |t|
     t.string   "device_token"
     t.string   "foursquare_id"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "first_name"
     t.string   "last_name"
     t.integer  "level",         :default => 0
