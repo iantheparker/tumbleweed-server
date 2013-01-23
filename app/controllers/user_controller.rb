@@ -33,6 +33,7 @@ class UserController < ApplicationController
                 Rails.logger.info("yo, user exists, so resetting values" + @user.inspect)
                 @user.checkins.destroy_all
                 @user.level = 0
+                @user.save
                 render :json => @user
             end
         else

@@ -20,29 +20,27 @@ class FoursquareController < ApplicationController
         user = User.find_by_foursquare_id(foursquare_user_id)
         if user.nil?
         	return
-        end        
+        end
+        
+        source_url = checkin_source(checkin_id, params={}, user.oauth_token)
+	if /tumbleweed/.match(source_url)
+	    #if this checkin is coming from the iOS app, ignore it.
+	    return
+	end
 
-		unlocked_milestone, checkin_text = process_checkin(user, venue_type)
-		if checkin_text
-			checkin_reply(checkin_id, params={:text => checkin_text}, user.oauth_token)
-		end
-		if unlocked_milestone
-			puts checkin_id
-			successful_checkin = Checkin.create(:user_id => user.id,
-							    :checkin_id => checkin_id,
-							    :milestone_id => unlocked_milestone,
-							    :venue_name => venue_name,
-							    :venue_category => venue["categories"][0]["name"],
-							    :venue_id => venue["id"])
-			source_url = checkin_source(checkin_id, params={}, user.oauth_token)
-			if /tumbleweed/.match(source_url).nil?
-				# if user didn't check in using the iOS app, then send a push notification
-				device = APN::Device.find_by_token(user.device_token)
-				message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
-				logger.info(message)
-				user.send_push(device, message)
-			end
-		end	
+	unlocked_milestone, checkin_text = process_checkin(user, venue_type)
+	if checkin_text
+		checkin_reply(checkin_id, params={:text => checkin_text}, user.oauth_token)
+	end
+	if unlocked_milestone
+		puts checkin_id
+		successful_checkin = Checkin.create(:user_id => user.id,
+						    :checkin_id => checkin_id,
+						    :milestone_id => unlocked_milestone,
+						    :venue_name => venue_name,
+						    :venue_category => venue["categories"][0]["name"],
+						    :venue_id => venue["id"])
+	end	
 		
         render :text => "got push"
     end
@@ -61,7 +59,7 @@ class FoursquareController < ApplicationController
             riverbed1 = "Great Outdoors"
             if categories.join(" ") =~ /#{riverbed1}/
             	unlocked = "riverbed1"
-            	user.update_attributes(:level => (user.level +=1))
+            	user.update_level #update_attributes(:level => (user.level +=1))
             end
             checkin_text = "reply"
         when 2 
@@ -117,7 +115,7 @@ class FoursquareController < ApplicationController
             	if checkin_category.join(" ") =~ /#{category}/
             		puts "successful unlock of " + milestone + " chapter"
             		if remaining.count == 1
-            			user.update_attributes(:level => (user.level +=1))
+            			user.update_level #update_attributes(:level => (user.level +=1))
             		end
             		unlocked = milestone            	
             	end
