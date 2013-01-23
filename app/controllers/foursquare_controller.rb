@@ -112,14 +112,14 @@ class FoursquareController < ApplicationController
         
         remaining = milestones - checked_milestones
         # if they checked in to a gas station and the gas scene is locked, hit that case first
-        if checkin_category.join(" ") =~ /Gas/ && remaining.join(" ") =~ /#{gas}/
-        	puts "this is totally a gas station"
-        	return gas
-        end
+        #if checkin_category.join(" ") =~ /Gas/ && remaining.join(" ") =~ /#{gas}/
+        #	puts "this is totally a gas station"
+        #	return gas
+        #end
         remaining.each do |milestone|
            categories = category_map[milestone]
            categories.map { |category|
-	       puts "in nonlin loop " + milestone + category + checkin_category.join(" ")
+	       puts "milestone left " + milestone + " each possible category " + category + " this category " + checkin_category.join(" ")
             	if checkin_category.join(" ") =~ /#{category}/
             		puts "successful unlock of " + milestone + " chapter"
             		if remaining.count == 1
