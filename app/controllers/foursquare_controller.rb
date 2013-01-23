@@ -42,6 +42,10 @@ class FoursquareController < ApplicationController
 						    :venue_name => venue_name,
 						    :venue_category => venue["categories"][0]["name"],
 						    :venue_id => venue["id"])
+		device = APN::Device.find_by_token(user.device_token)
+		message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
+		logger.info(message)
+		user.send_push(device, message)
 	end	
 		
         render :text => "got push"
@@ -106,17 +110,16 @@ class FoursquareController < ApplicationController
         checkins = Checkin.find_all_by_user_id(user.id)
         checked_milestones = checkins.map {|c| c.milestone_id}
         
-        
         remaining = milestones - checked_milestones
-        puts "inside of process_non_linear" + remaining.join(" ")
         # if they checked in to a gas station and the gas scene is locked, hit that case first
         if checkin_category.join(" ") =~ /Gas/ && remaining.join(" ") =~ /#{gas}/
         	puts "this is totally a gas station"
         	return gas
         end
         remaining.each do |milestone|
-           categories = category_map[milestone] 
+           categories = category_map[milestone]
            categories.map { |category|
+	       puts "in nonlin loop " + milestone + category
             	if checkin_category.join(" ") =~ /#{category}/
             		puts "successful unlock of " + milestone + " chapter"
             		if remaining.count == 1
@@ -126,7 +129,7 @@ class FoursquareController < ApplicationController
             	end
             }
         end
-        puts "unlocked is " + unlocked
+        #puts "unlocked is " + unlocked
         return unlocked
     end
 
