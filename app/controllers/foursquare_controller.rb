@@ -11,7 +11,8 @@ class FoursquareController < ApplicationController
         venue = checkin["venue"]
         venue_name = venue["name"]
         venue_cat_parents = venue["categories"][0]["parents"]
-        venue_type = venue_cat_parents << venue_name
+        venue_cat_name = venue["categories"][0]["name"]
+        venue_type = venue_cat_parents << venue_cat_name
         puts venue_type
 
         foursquare_user= JSON.parse(params['user'])
@@ -108,7 +109,10 @@ class FoursquareController < ApplicationController
 
         milestones = [deal, saloon, gas]
         checkins = Checkin.find_all_by_user_id(user.id)
-        checked_milestones = checkins.map {|c| c.milestone_id}
+        checked_milestones = checkins.map {|c|
+	    c.milestone_id
+	    puts c.milestone_id
+	}
         
         remaining = milestones - checked_milestones
         # if they checked in to a gas station and the gas scene is locked, hit that case first
