@@ -103,8 +103,8 @@ class FoursquareController < ApplicationController
         
         category_map = {
             deal => ["Shops & Services"],
-        	saloon => ["Food", "Nightlife Spots"],
-        	gas => ["Travel & Transport", "Gas Station"]}
+            saloon => ["Food", "Nightlife Spots"],
+            gas => ["Travel & Transport", "Gas Station"]}
 
         milestones = [deal, saloon, gas]
         checkins = Checkin.find_all_by_user_id(user.id)
@@ -119,7 +119,7 @@ class FoursquareController < ApplicationController
         remaining.each do |milestone|
            categories = category_map[milestone]
            categories.map { |category|
-	       puts "in nonlin loop " + milestone + category
+	       puts "in nonlin loop " + milestone + category + checkin_category.join(" ")
             	if checkin_category.join(" ") =~ /#{category}/
             		puts "successful unlock of " + milestone + " chapter"
             		if remaining.count == 1
