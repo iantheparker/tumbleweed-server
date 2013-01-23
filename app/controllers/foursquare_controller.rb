@@ -108,7 +108,7 @@ class FoursquareController < ApplicationController
         
         
         remaining = milestones - checked_milestones
-        puts "inside of process_non_linear" + remaining
+        puts "inside of process_non_linear" + remaining.join(" ")
         # if they checked in to a gas station and the gas scene is locked, hit that case first
         if checkin_category.join(" ") =~ /Gas/ && remaining.join(" ") =~ /#{gas}/
         	puts "this is totally a gas station"
