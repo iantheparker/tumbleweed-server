@@ -19,6 +19,7 @@ class FoursquareController < ApplicationController
 
         user = User.find_by_foursquare_id(foursquare_user_id)
         if user.nil?
+        	render :text => "got push, but there's no user. "
         	return
         end
         
