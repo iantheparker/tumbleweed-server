@@ -126,6 +126,7 @@ class FoursquareController < ApplicationController
             	end
             }
         end
+        puts "unlocked is " + unlocked
         return unlocked
     end
 
