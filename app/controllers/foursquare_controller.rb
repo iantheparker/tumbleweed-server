@@ -106,9 +106,11 @@ class FoursquareController < ApplicationController
         checkins = Checkin.find_all_by_user_id(user.id)
         checked_milestones = checkins.map {|c| c.milestone_id}
         
+        puts "inside of process_non_linear"
         remaining = milestones - checked_milestones
         # if they checked in to a gas station and the gas scene is locked, hit that case first
         if checkin_category.join(" ") =~ /Gas/ && remaining.join(" ") =~ /#{gas}/
+        	puts "this is totally a gas station"
         	return gas
         end
         remaining.each do |milestone|
