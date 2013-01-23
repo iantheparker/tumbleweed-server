@@ -25,6 +25,7 @@ class FoursquareController < ApplicationController
         source_url = checkin_source(checkin_id, params={}, user.oauth_token)
 	if /tumbleweed/.match(source_url)
 	    #if this checkin is coming from the iOS app, ignore it.
+	    render :text => "got push from tumbleweed. gonna ignore that."
 	    return
 	end
 
