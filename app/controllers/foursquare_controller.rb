@@ -20,14 +20,21 @@ class FoursquareController < ApplicationController
 
         user = User.find_by_foursquare_id(foursquare_user_id)
         if user.nil?
-        	render :text => "got push, but there's no user. "
-        	return
+	    render :text => "got push, but there's no user. "
+	    return
         end
         
         source_url = checkin_source(checkin_id, params={}, user.oauth_token)
 	if /tumbleweed/.match(source_url)
 	    #if this checkin is coming from the iOS app, ignore it.
-	    render :text => "got push from tumbleweed. gonna ignore that."
+	    successful_checkin = Checkin.create(:user_id => user.id,
+						:checkin_id => checkin_id,
+						:milestone_id => user.level.to_s,
+						:venue_name => venue_name,
+						:venue_category => venue_cat_name,
+						:venue_id => venue["id"])
+	    user.update_attributes(:level => (user.level +=1))
+	    render :text => "got push from tumbleweed"
 	    return
 	end
 
@@ -36,12 +43,11 @@ class FoursquareController < ApplicationController
 		checkin_reply(checkin_id, params={:text => checkin_text}, user.oauth_token)
 	end
 	if unlocked_milestone
-		puts checkin_id
 		successful_checkin = Checkin.create(:user_id => user.id,
 						    :checkin_id => checkin_id,
 						    :milestone_id => unlocked_milestone,
 						    :venue_name => venue_name,
-						    :venue_category => venue["categories"][0]["name"],
+						    :venue_category => venue_cat_name,
 						    :venue_id => venue["id"])
 		device = APN::Device.find_by_token(user.device_token)
 		message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
@@ -51,6 +57,8 @@ class FoursquareController < ApplicationController
 		
         render :text => "got push"
     end
+    
+
   
     def process_checkin(user, categories=[])
     	unlocked = nil
@@ -58,25 +66,51 @@ class FoursquareController < ApplicationController
     	
         case user.level
         when 0 
-           # check non linear checkins 
-           unlocked = process_nonlinear_checkin(user, categories)
-           checkin_text = "reply"
-        when 1 
-            # check if they satisfied great outdoors
-            riverbed1 = "Great Outdoors"
-            if categories.join(" ") =~ /#{riverbed1}/
-            	unlocked = "riverbed1"
-            	user.update_level #update_attributes(:level => (user.level +=1))
-            end
+           #check if they satisfied deal
+           deal = ["Shops & Services"]
+           deal.map{|categoryId|
+		if categories.join(" ") =~ /#{categoryId}/
+		    unlocked = "Deal"
+		    user.update_attributes(:level => (user.level +=1))
+		end
+	   }
             checkin_text = "reply"
-        when 2 
-            puts "time-based level"
+        when 1
+	    saloon = ["Food", "Nightlife Spots"]
+            saloon.map{|categoryId|
+		if categories.join(" ") =~ /#{categoryId}/
+		    unlocked = "Saloon"
+		    user.update_attributes(:level => (user.level +=1))
+		end
+	   }
+            checkin_text = "reply"
+        when 2
+	    gas = ["Travel & Transport", "Gas Station"]
+            gas.map{|categoryId|
+		if categories.join(" ") =~ /#{categoryId}/
+		    unlocked = "Gas Station"
+		    user.update_attributes(:level => (user.level +=1))
+		end
+	   }
+            checkin_text = "reply"    
         when 3 
-            puts "distance-based level"
+            # check if they satisfied great outdoors
+            riverbed1 = ["Great Outdoors"]
+            riverbed1.map{|categoryId}
+		if categories.join(" ") =~ /#{categoryId}/
+		    unlocked = "Riverbed"
+		    user.update_attributes(:level => (user.level +=1))
+		end
+	    }
+            checkin_text = "reply"
         when 4 
-        	#somewhere new
-        	checkin_text = "reply"
+            puts "time-based level"
         when 5 
+            puts "distance-based level"
+        when 6 
+        	#somewhere new
+        	#checkin_text = "reply"
+        when 7 
         	#game over
         end
         
@@ -95,47 +129,6 @@ class FoursquareController < ApplicationController
         end
     end
 
-    def process_nonlinear_checkin(user, checkin_category)
-        unlocked = nil
-        
-        deal = "deal"
-        saloon = "saloon"
-        gas = "gas"
-        
-        category_map = {
-            deal => ["Shops & Services"],
-            saloon => ["Food", "Nightlife Spots"],
-            gas => ["Travel & Transport", "Gas Station"]}
-
-        milestones = [deal, saloon, gas]
-        checkins = Checkin.find_all_by_user_id(user.id)
-        checked_milestones = checkins.map {|c|
-	    c.milestone_id
-	    puts c.milestone_id
-	}
-        
-        remaining = milestones - checked_milestones
-        # if they checked in to a gas station and the gas scene is locked, hit that case first
-        #if checkin_category.join(" ") =~ /Gas/ && remaining.join(" ") =~ /#{gas}/
-        #	puts "this is totally a gas station"
-        #	return gas
-        #end
-        remaining.each do |milestone|
-           categories = category_map[milestone]
-           categories.map { |category|
-	       puts "milestone left " + milestone + " each possible category " + category + " this category " + checkin_category.join(" ")
-            	if checkin_category.join(" ") =~ /#{category}/
-            		puts "successful unlock of " + milestone + " chapter"
-            		if remaining.count == 1
-            			user.update_level #update_attributes(:level => (user.level +=1))
-            		end
-            		unlocked = milestone            	
-            	end
-            }
-        end
-        #puts "unlocked is " + unlocked
-        return unlocked
-    end
 
     def checkin_source(checkin_id, params={}, oauth_token)
     	@checkin_id = checkin_id
