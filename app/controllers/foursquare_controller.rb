@@ -23,7 +23,7 @@ class FoursquareController < ApplicationController
 	    render :text => "got push, but there's no user. "
 	    return
         end
-        Rails.logger.info("yo, user exists" + @user.inspect)
+        Rails.logger.info("user exists" + user.inspect)
         
         source_url = checkin_source(checkin_id, params={}, user.oauth_token)
 	if /tumbleweed/.match(source_url)
