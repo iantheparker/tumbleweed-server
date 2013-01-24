@@ -23,6 +23,7 @@ class FoursquareController < ApplicationController
 	    render :text => "got push, but there's no user. "
 	    return
         end
+        puts "user_id: " + user.id + " is at level " + user.level
         
         source_url = checkin_source(checkin_id, params={}, user.oauth_token)
 	if /tumbleweed/.match(source_url)
@@ -34,6 +35,7 @@ class FoursquareController < ApplicationController
 						:venue_category => venue_cat_name,
 						:venue_id => venue["id"])
 	    user.update_attributes(:level => (user.level +=1))
+	    puts "came from iOS"
 	    render :text => "got push from tumbleweed"
 	    return
 	end
@@ -63,7 +65,7 @@ class FoursquareController < ApplicationController
     def process_checkin(user, categories=[])
     	unlocked = nil
     	checkin_text = nil
-    	
+    	    	
         case user.level
         when 0 
            #check if they satisfied deal
