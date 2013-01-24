@@ -79,7 +79,7 @@ class FoursquareController < ApplicationController
 	   }
             checkin_text = "reply"
         when 1
-	    saloon = ["Food", "Nightlife Spots"]
+	    saloon = ["Food", "Nightlife Spot"]
             saloon.map{ |categoryId|
 		puts categories.join(" ") + categoryId
 		if categories.join(" ") =~ /#{categoryId}/
