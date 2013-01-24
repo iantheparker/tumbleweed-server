@@ -96,7 +96,7 @@ class FoursquareController < ApplicationController
         when 3 
             # check if they satisfied great outdoors
             riverbed1 = ["Great Outdoors"]
-            riverbed1.map{|categoryId}
+            riverbed1.map{|categoryId|
 		if categories.join(" ") =~ /#{categoryId}/
 		    unlocked = "Riverbed"
 		    user.update_attributes(:level => (user.level +=1))
