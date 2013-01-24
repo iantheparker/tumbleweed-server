@@ -30,7 +30,7 @@ class UserController < ApplicationController
                 #	@device.update_attributes(:token => @device_id)
                 #	@user.update_attributes(:device_token => @device.token)
                 #end
-                Rails.logger.info("yo, user exists, so resetting values" + @user.inspect)
+                Rails.logger.info("yo, user exists, so resetting values")
                 @user.checkins.destroy_all
                 @user.level = 0
                 @user.save

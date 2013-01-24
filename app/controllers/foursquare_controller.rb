@@ -70,7 +70,8 @@ class FoursquareController < ApplicationController
         when 0 
            #check if they satisfied deal
            deal = ["Shops & Services"]
-           deal.map{|categoryId|
+           deal.map{ |categoryId|
+		puts categories.join(" ") + categoryId
 		if categories.join(" ") =~ /#{categoryId}/
 		    unlocked = "Deal"
 		    user.update_attributes(:level => (user.level +=1))
@@ -79,7 +80,8 @@ class FoursquareController < ApplicationController
             checkin_text = "reply"
         when 1
 	    saloon = ["Food", "Nightlife Spots"]
-            saloon.map{|categoryId|
+            saloon.map{ |categoryId|
+		puts categories.join(" ") + categoryId
 		if categories.join(" ") =~ /#{categoryId}/
 		    unlocked = "Saloon"
 		    user.update_attributes(:level => (user.level +=1))
@@ -88,7 +90,8 @@ class FoursquareController < ApplicationController
             checkin_text = "reply"
         when 2
 	    gas = ["Travel & Transport", "Gas Station"]
-            gas.map{|categoryId|
+            gas.map{ |categoryId|
+		puts categories.join(" ") + categoryId
 		if categories.join(" ") =~ /#{categoryId}/
 		    unlocked = "Gas Station"
 		    user.update_attributes(:level => (user.level +=1))
@@ -98,7 +101,8 @@ class FoursquareController < ApplicationController
         when 3 
             # check if they satisfied great outdoors
             riverbed1 = ["Great Outdoors"]
-            riverbed1.map{|categoryId|
+            riverbed1.map{ |categoryId|
+		puts categories.join(" ") + categoryId
 		if categories.join(" ") =~ /#{categoryId}/
 		    unlocked = "Riverbed"
 		    user.update_attributes(:level => (user.level +=1))
