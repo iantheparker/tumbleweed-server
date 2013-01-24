@@ -69,7 +69,7 @@ class FoursquareController < ApplicationController
         case user.level
         when 0 
            #check if they satisfied deal
-           deal = ["Shops & Services"]
+           deal = ["Shop"]
            deal.map{ |categoryId|
 		puts categories.join(" ") + categoryId
 		if categories.join(" ") =~ /#{categoryId}/
@@ -79,7 +79,7 @@ class FoursquareController < ApplicationController
 	   }
             checkin_text = "reply"
         when 1
-	    saloon = ["Food", "Nightlife Spot"]
+	    saloon = ["Restaurant", "Nightlife"]
             saloon.map{ |categoryId|
 		puts categories.join(" ") + categoryId
 		if categories.join(" ") =~ /#{categoryId}/
@@ -100,7 +100,7 @@ class FoursquareController < ApplicationController
             checkin_text = "reply"    
         when 3 
             # check if they satisfied great outdoors
-            riverbed1 = ["Great Outdoors"]
+            riverbed1 = ["Outdoors"]
             riverbed1.map{ |categoryId|
 		puts categories.join(" ") + categoryId
 		if categories.join(" ") =~ /#{categoryId}/
