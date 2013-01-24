@@ -51,10 +51,7 @@ class FoursquareController < ApplicationController
 						    :venue_name => venue_name,
 						    :venue_category => venue_cat_name,
 						    :venue_id => venue["id"])
-		device = APN::Device.find_by_token(user.device_token)
-		message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
-		logger.info(message)
-		user.send_push(device, message)
+		user.update_level_with_apn(message)
 	end	
 		
         render :text => "got push"
@@ -74,7 +71,6 @@ class FoursquareController < ApplicationController
 		puts categories.join(" ") + categoryId
 		if categories.join(" ") =~ /#{categoryId}/
 		    unlocked = "Deal"
-		    user.update_attributes(:level => (user.level +=1))
 		end
 	   }
             checkin_text = "reply"
@@ -84,7 +80,6 @@ class FoursquareController < ApplicationController
 		puts categories.join(" ") + categoryId
 		if categories.join(" ") =~ /#{categoryId}/
 		    unlocked = "Saloon"
-		    user.update_attributes(:level => (user.level +=1))
 		end
 	   }
             checkin_text = "reply"
@@ -94,7 +89,6 @@ class FoursquareController < ApplicationController
 		puts categories.join(" ") + categoryId
 		if categories.join(" ") =~ /#{categoryId}/
 		    unlocked = "Gas Station"
-		    user.update_attributes(:level => (user.level +=1))
 		end
 	   }
             checkin_text = "reply"    
@@ -105,7 +99,6 @@ class FoursquareController < ApplicationController
 		puts categories.join(" ") + categoryId
 		if categories.join(" ") =~ /#{categoryId}/
 		    unlocked = "Riverbed"
-		    user.update_attributes(:level => (user.level +=1))
 		end
 	    }
             checkin_text = "reply"

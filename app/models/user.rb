@@ -8,11 +8,14 @@ class User < ActiveRecord::Base
 		#puts "check_time_elapsed"
 	end
 	
-	def update_level
+	def update_level_with_apn ( message )
 		self.level += 1
 		save
+		
+		if message.nil?
+			message = "You unlocked the next chapter of No Man's Land!"
+		end
 		device = APN::Device.find_by_token(self.device_token)
-		message = "You unlocked the next chapter of No Man's Land!"
 		logger.info(message)
 		send_push(device, message)
 	end

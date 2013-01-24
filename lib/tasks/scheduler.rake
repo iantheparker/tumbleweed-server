@@ -4,13 +4,7 @@ task :unlock_time => :environment do
     users = User.find_all_by_level(4)
     users.map { |user|
     	if user.checkins.last.updated_at < 2.hours.ago
-    		device = APN::Device.find_by_token(user.device_token)
-			message = "The next chapter of No Man's Land is ready for you."
-			Rails.logger.info(message)
-			user.send_push(device, message)
-			puts user.first_name
-			user.level += 1
-			user.save
+    		user.update_level_with_apn()
     	end
     }
     puts "done."

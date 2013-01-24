@@ -23,7 +23,7 @@ class UserController < ApplicationController
                                     :last_name => @last_name,
                                     :oauth_token => @oauth_token)
                                    Rails.logger.info("oh snap, new user: send push")
-                                   @user.send_push(@device, "Welcome to Tumbleweed " + @user.first_name) 
+                                   @user.send_push(@device, "Welcome to No Man's Land. Class is now in session. " + @user.first_name) 
                                    render :json => @user                                
             else
                 #if /#{@device_id}/.match(@user.device_token).nil?
@@ -42,8 +42,18 @@ class UserController < ApplicationController
 
     end
 
-    def status
-        render :text => "i'm in status"
+    def update_from_app
+	@user_id = params['id']
+	@level = params['level']
+	
+	#in case the server misses a foursquare push and the app knows it,
+	#then it can update the user here
+	
+	user = User.find_by_id(@user_id)
+	user.level = @level
+	user.save
+	
+        render :text => "i'm in update_user"
     end
     
     #unlock distance method
