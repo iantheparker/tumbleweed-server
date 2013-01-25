@@ -53,7 +53,7 @@ class UserController < ApplicationController
 	user.level = @level
 	user.save
 	
-        render :text => "i'm in update_user"
+        render :json => user
     end
     
     #unlock distance method
