@@ -51,6 +51,7 @@ class FoursquareController < ApplicationController
 						    :venue_name => venue_name,
 						    :venue_category => venue_cat_name,
 						    :venue_id => venue["id"])
+		message = "Your checkin at " + venue_name + " unlocked the next chapter of No Man's Land!"
 		user.update_level_with_apn(message)
 	end	
 		
