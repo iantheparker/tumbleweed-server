@@ -21,6 +21,12 @@ class User < ActiveRecord::Base
 	end
 	
 	def send_push(device, message)
+		if device.nil?
+			device = APN::Device.find_by_token(self.device_token)
+		end
+		if message.nil?
+			message = "You unlocked the next chapter of No Man's Land!"
+		end
 		notification=APN::Notification.new
 		notification.device=device
 		notification.badge=1
