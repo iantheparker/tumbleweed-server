@@ -1,5 +1,5 @@
 class UserController < ApplicationController
-    skip_before_filter :verify_authenticity_token
+    #skip_before_filter :verify_authenticity_token
     def register
         @foursquare_id = params['foursquare_id']
         @device_id = params['device_token']
@@ -23,13 +23,9 @@ class UserController < ApplicationController
                                     :last_name => @last_name,
                                     :oauth_token => @oauth_token)
                                    Rails.logger.info("oh snap, new user: send push")
-                                   @user.send_push(@device, "Welcome to No Man's Land. Class is now in session. " + @user.first_name) 
+                                   @user.send_push(@device, "Welcome to No Man's Land. This mobile movie is now in session.") 
                                    render :json => @user                                
             else
-                #if /#{@device_id}/.match(@user.device_token).nil?
-                #	@device.update_attributes(:token => @device_id)
-                #	@user.update_attributes(:device_token => @device.token)
-                #end
                 Rails.logger.info("yo, user exists, so resetting values")
                 @user.checkins.destroy_all
                 @user.level = 0

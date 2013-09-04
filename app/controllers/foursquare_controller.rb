@@ -106,9 +106,10 @@ class FoursquareController < ApplicationController
         when 4 
             puts "time-based level"
         when 5 
-            puts "distance-based level"
+            
+            #if somewhere new, unlock it
         when 6 
-        	#somewhere new
+        	puts "distance-based level"
         	#checkin_text = "reply"
         when 7 
         	#game over
